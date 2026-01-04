@@ -1,0 +1,1004 @@
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- 如果环境没有内置 lodash，这里简单的 get 实现已包含在脚本中，无需额外引入 -->
+    <style>
+        @import url(https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap);
+        
+        :root {
+            --bg-color: transparent;
+            --card-bg-color: rgba(255, 248, 250, 0.95);
+            --border-color: rgba(255, 192, 203, 0.5);
+            --text-primary-color: #8b576e;
+            --text-secondary-color: #b48a9d;
+            --accent-color: #f472b6;
+            --accent-soft: rgba(244, 114, 182, 0.15);
+            --tab-bg-color: rgba(255, 240, 244, 0.9);
+            --item-bg-color: rgba(255, 255, 255, 0.65);
+            --item-border-color: rgba(255, 192, 203, 0.4);
+            --item-hover-bg-color: rgba(244, 114, 182, 0.1);
+            --boolean-true-color: #6ee7b7;
+            --boolean-false-color: #f78b8b;
+            --locked-color: #d1d5db;
+            --warning-color: #ef4444;
+        }
+
+        body {
+            font-family: "Noto Sans SC", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary-color);
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        .status-card {
+            width: 100%;
+            height: 100%;
+            background-color: var(--card-bg-color);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tabs {
+            display: flex;
+            background-color: var(--tab-bg-color);
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .tab-button {
+            flex-grow: 1;
+            padding: 12px 10px;
+            cursor: pointer;
+            border: none;
+            background-color: rgba(0, 0, 0, 0);
+            color: var(--text-secondary-color);
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            outline: none;
+        }
+
+        .tab-button:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .tab-button:hover {
+            color: var(--accent-color);
+            background-color: var(--accent-soft);
+        }
+
+        .tab-button.active {
+            color: var(--text-primary-color);
+            font-weight: 700;
+        }
+
+        .tab-button.active:after {
+            width: 60%;
+        }
+
+        .tab-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 18px;
+        }
+
+        .tab-content {
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section {
+            margin-bottom: 22px;
+        }
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-header {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: var(--accent-color);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-header.collapsible {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 10px;
+        }
+
+        .property-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .property-list.evaluation {
+            gap: 0;
+        }
+
+        .property {
+            background-color: var(--item-bg-color);
+            border-radius: 8px;
+            padding: 10px 12px;
+            border: 1px solid var(--item-border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            gap: 10px;
+        }
+
+        .property:hover {
+            transform: translateY(-2px);
+            background-color: var(--item-hover-bg-color);
+            box-shadow: 0 4px 15px rgba(255, 192, 203, 0.2);
+        }
+
+        .evaluation-item {
+            background-color: var(--item-bg-color);
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid var(--item-border-color);
+            margin-bottom: 10px;
+        }
+
+        .evaluation-title {
+            color: var(--text-secondary-color);
+            font-weight: 500;
+            font-size: 0.95em;
+            margin-bottom: 6px;
+        }
+
+        .evaluation-text {
+            color: var(--text-primary-color);
+            font-size: 1em;
+            line-height: 1.5;
+        }
+
+        .property-name {
+            color: var(--text-secondary-color);
+            font-weight: 500;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+
+        .value-main {
+            font-weight: 500;
+            font-size: 1em;
+            color: var(--text-primary-color);
+            text-align: right;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        .task-status {
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+        .task-status.not-started { color: #facc15; }
+        .task-status.in-progress { color: #60a5fa; }
+        .task-status.completed { color: #6ee7b7; }
+        .task-status.failed { color: #f78b8b; }
+
+        .outfit-value {
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .boolean-value.is-true { color: var(--boolean-true-color); font-weight: 700; }
+        .boolean-value.is-false { color: var(--boolean-false-color); font-weight: 700; }
+        .locked-value { color: var(--locked-color); font-style: italic; }
+        .penalty-active { color: var(--warning-color); font-weight: bold; }
+
+        .collapsible-header {
+            cursor: pointer;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .collapsible-header.wardrobe-item {
+            background-color: var(--item-bg-color);
+        }
+
+        .collapsible-header.wardrobe-item:hover {
+            background-color: var(--accent-soft);
+            transform: translateY(-1px);
+        }
+
+        .collapsible-arrow {
+            transition: transform 0.3s ease-in-out;
+            color: var(--accent-color);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.2, 0, 0.1, 1);
+            padding-left: 15px;
+            border-left: 2px solid var(--accent-soft);
+            margin-top: 5px;
+        }
+
+        .collapsible-content.no-border {
+            padding-left: 0;
+            border-left: none;
+            margin-top: 0;
+        }
+
+        .collapsible-content.expanded {
+            max-height: 200vh; /* Large enough to fit content */
+            transition: max-height 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 8px 6px;
+            border-bottom: 1px solid var(--border-color);
+            gap: 15px;
+        }
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-name { color: var(--text-primary-color); flex-shrink: 0; }
+        .item-desc { color: var(--text-secondary-color); font-size: 0.9em; text-align: right; }
+    </style>
+</head>
+<body>
+    <div id="app" class="status-card">
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button type="button" class="tab-button" :class="{ active: activeTab === 'Page1' }" @click="activeTab = 'Page1'">状态总览</button>
+            <button type="button" class="tab-button" :class="{ active: activeTab === 'Page2' }" @click="activeTab = 'Page2'">情欲记录</button>
+            <button type="button" class="tab-button" :class="{ active: activeTab === 'Page3' }" @click="activeTab = 'Page3'">个人物品</button>
+            <button type="button" class="tab-button" :class="{ active: activeTab === 'Page4' }" @click="activeTab = 'Page4'">外部讯息</button>
+        </div>
+
+        <!-- Tab Container -->
+        <div class="tab-container">
+            
+            <!-- PAGE 1: 状态总览 -->
+            <div v-show="activeTab === 'Page1'" class="tab-content" id="Page1">
+                <!-- World Status -->
+                <div class="section">
+                    <h3 class="section-header">世界状态</h3>
+                    <div class="property-grid">
+                        <div class="property"><span class="property-name">当前地点:</span><span class="value-main">{{ worldLocation }}</span></div>
+                        <div class="property"><span class="property-name">当前日期:</span><span class="value-main">{{ worldDate }}</span></div>
+                        <div class="property"><span class="property-name">当前时间:</span><span class="value-main">{{ worldTime }}</span></div>
+                        <div class="property"><span class="property-name">星期:</span><span class="value-main">{{ worldWeek }}</span></div>
+                        <div class="property"><span class="property-name">当前天气:</span><span class="value-main">{{ worldWeather }}</span></div>
+                    </div>
+                </div>
+
+                <!-- Core Status -->
+                <div class="section">
+                    <h3 class="section-header">墨墨 - 核心状态</h3>
+                    <div class="property-grid">
+                        <div class="property"><span class="property-name">金钱:</span><span class="value-main">{{ money }}</span></div>
+                        <div class="property"><span class="property-name">学分:</span><span class="value-main">{{ credits }}</span></div>
+                        <div class="property"><span class="property-name">身份暴露度:</span><span class="value-main">{{ exposure }}</span></div>
+                        <div class="property"><span class="property-name">身处状态:</span><span class="value-main">{{ statusState }}</span></div>
+                        <div class="property"><span class="property-name">发布者满意度:</span><span class="value-main">{{ publisherSat }}</span></div>
+                        <div class="property"><span class="property-name">任务发放倒计时:</span><span class="value-main">{{ taskCountdown }}</span></div>
+                    </div>
+                    <div v-if="inPenalty" style="margin-top: 10px;">
+                        <div class="property" style="border-color: var(--warning-color); background-color: rgba(239, 68, 68, 0.1);">
+                            <span class="property-name penalty-active">⚠ 当前处于惩罚状态</span>
+                            <span class="value-main" style="color: var(--warning-color); font-size: 0.9em;">{{ penaltyInfo }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appearance Data -->
+                <div class="section">
+                    <h3 class="section-header">墨墨 - 外观数据</h3>
+                    <div class="property-grid">
+                        <div class="property"><span class="property-name">发型:</span><span class="value-main">{{ hairStyle }}</span></div>
+                        <div class="property"><span class="property-name">发色:</span><span class="value-main">{{ hairColor }}</span></div>
+                        <div class="property"><span class="property-name">眉形:</span><span class="value-main">{{ Eyebrowshape }}</span></div>
+                        <div class="property"><span class="property-name">瞳色:</span><span class="value-main">{{ eyeColor }}</span></div>
+                        <div class="property"><span class="property-name">眼型:</span><span class="value-main">{{ eyeShape }}</span></div>
+                        <div class="property"><span class="property-name">脸型:</span><span class="value-main">{{ faceShape }}</span></div>
+                        <div class="property"><span class="property-name">鼻型:</span><span class="value-main">{{ noseShape }}</span></div>
+                        <div class="property"><span class="property-name">唇形:</span><span class="value-main">{{ Lipshape }}</span></div>
+                        <div class="property"><span class="property-name">胸围:</span><span class="value-main">{{ bust }}</span></div>
+                        <div class="property"><span class="property-name">腰围:</span><span class="value-main">{{ waist }}</span></div>
+                        <div class="property"><span class="property-name">臀围:</span><span class="value-main">{{ hips }}</span></div>
+                        <div class="property"><span class="property-name">肤色:</span><span class="value-main">{{ Skincolor }}</span></div>
+                    </div>
+                </div>
+
+                <!-- Body Modifications (UPDATED: Wardrobe Style) -->
+                <div class="section">
+                    <h3 class="section-header collapsible" @click="toggle('bodyMods')">
+                        <span>墨墨 - 身体改造</span>
+                        <span class="collapsible-arrow" :style="{ transform: isExpanded('bodyMods') ? 'rotate(90deg)' : 'rotate(0deg)' }">▶</span>
+                    </h3>
+                    <div class="collapsible-content no-border" :class="{ expanded: isExpanded('bodyMods') }">
+                        <!-- Loop through body mod categories -->
+                        <div v-for="cat in bodyModsList" :key="cat.key">
+                            <div class="collapsible-header wardrobe-item" @click="toggle(cat.expandKey)">
+                                <span class="property-name">{{ cat.label }} ({{ cat.items.length }})</span>
+                                <span class="collapsible-arrow" :style="{ transform: isExpanded(cat.expandKey) ? 'rotate(90deg)' : 'rotate(0deg)' }">▶</span>
+                            </div>
+                            <div class="collapsible-content" :class="{ expanded: isExpanded(cat.expandKey) }">
+                                <div v-if="cat.items.length === 0" class="list-item" style="justify-content: center;">
+                                    <span class="item-desc">无</span>
+                                </div>
+                                <div v-else class="property-list">
+                                    <div v-for="item in cat.items" :key="item.name" class="list-item">
+                                        <span class="item-name">{{ item.name }}</span>
+                                        <span class="item-desc">{{ item.desc }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Outfit (Collapsible) -->
+                <div class="section">
+                    <h3 class="section-header collapsible" @click="toggle('outfit')">
+                        <span>墨墨 - 当前着装</span>
+                        <span class="collapsible-arrow" :style="{ transform: isExpanded('outfit') ? 'rotate(90deg)' : 'rotate(0deg)' }">▶</span>
+                    </h3>
+                    <div class="collapsible-content no-border" :class="{ expanded: isExpanded('outfit') }">
+                        <div class="property-list">
+                            <div class="property"><span class="property-name">上装:</span><span class="value-main outfit-value">{{ outfitTop }}</span></div>
+                            <div class="property"><span class="property-name">下装:</span><span class="value-main outfit-value">{{ outfitBottom }}</span></div>
+                            <div class="property"><span class="property-name">套装:</span><span class="value-main outfit-value">{{ outfitSuit }}</span></div>
+                            <div class="property"><span class="property-name">内衣:</span><span class="value-main outfit-value">{{ outfitBra }}</span></div>
+                            <div class="property"><span class="property-name">内裤:</span><span class="value-main outfit-value">{{ outfitPanties }}</span></div>
+                            <div class="property"><span class="property-name">袜子:</span><span class="value-main outfit-value">{{ outfitSocks }}</span></div>
+                            <div class="property"><span class="property-name">鞋子:</span><span class="value-main outfit-value">{{ outfitShoes }}</span></div>
+                            <div class="property"><span class="property-name">饰品:</span><span class="value-main outfit-value">{{ outfitAcc }}</span></div>
+                            <div class="property"><span class="property-name">手持物品:</span><span class="value-main outfit-value">{{ outfitHandheld }}</span></div>
+                            <div class="property"><span class="property-name">穿孔道具:</span><span class="value-main outfit-value">{{ outfitPiercing }}</span></div>
+                            <div class="property"><span class="property-name">性玩具:</span><span class="value-main outfit-value">{{ outfitToys }}</span></div>
+                            <div class="property"><span class="property-name">特殊分类:</span><span class="value-main outfit-value">{{ outfitSpecial }}</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 2: 情欲记录 -->
+            <div v-show="activeTab === 'Page2'" class="tab-content" id="Page2">
+                <div class="section">
+                    <h3 class="section-header">墨墨 - 色情状态</h3>
+                    <div class="property-grid">
+                        <div class="property"><span class="property-name">堕落值:</span><span class="value-main">{{ depravity }}</span></div>
+                        <div class="property"><span class="property-name">堕落等级:</span><span class="value-main">{{ depravityLevel }}</span></div>
+                        <div class="property"><span class="property-name">性欲:</span><span class="value-main">{{ lust }}</span></div>
+                        <div class="property"><span class="property-name">总暴露值:</span><span class="value-main">{{ totalExposure }}</span></div>
+                        <div class="property"><span class="property-name">宫内精液:</span><span class="value-main">{{ semenWomb }}</span></div>
+                        <div class="property"><span class="property-name">肛门精液:</span><span class="value-main">{{ semenAnal }}</span></div>
+                        <div class="property"><span class="property-name">淫水数量:</span><span class="value-main">{{ juices }}</span></div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-header">外部精液痕迹</h3>
+                    <div class="property-list">
+                        <div v-if="semenExternal.length === 0" class="property"><span class="property-name">无</span></div>
+                        <div v-for="item in semenExternal" :key="item.key" class="property">
+                            <span class="property-name">{{ item.key }}:</span>
+                            <span class="value-main">{{ item.value }}ml</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-header">墨墨 - 身体开发记录</h3>
+                    <div class="property-grid">
+                        <div class="property"><span class="property-name">性经验:</span><span class="value-main">{{ sexExp }}</span></div>
+                        <div class="property"><span class="property-name">高潮次数:</span><span class="value-main">{{ orgasms }}</span></div>
+                        <div class="property">
+                            <span class="property-name">阴道处女:</span>
+                            <span class="value-main boolean-value" :class="isTrueClass(virginVaginal)">{{ booleanText(virginVaginal) }}</span>
+                        </div>
+                        <div class="property">
+                            <span class="property-name">肛门处女:</span>
+                            <span class="value-main boolean-value" :class="isTrueClass(virginAnal)">{{ booleanText(virginAnal) }}</span>
+                        </div>
+                        <div class="property"><span class="property-name">口穴开发度:</span><span class="value-main">{{ devMouth }}</span></div>
+                        <div class="property"><span class="property-name">私处开发度:</span><span class="value-main">{{ devPussy }}</span></div>
+                        <div class="property"><span class="property-name">肛门开发度:</span><span class="value-main">{{ devAnal }}</span></div>
+                        <div class="property"><span class="property-name">乳房开发度:</span><span class="value-main">{{ devBoobs }}</span></div>
+                        <div class="property"><span class="property-name">屁股敏感度:</span><span class="value-main">{{ sensButt }}</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 3: 个人物品 -->
+            <div v-show="activeTab === 'Page3'" class="tab-content" id="Page3">
+                <div class="section">
+                    <h3 class="section-header">背包</h3>
+                    <div class="property-list">
+                        <div v-if="inventory.length === 0" class="property"><span class="property-name">空</span></div>
+                        <div v-for="item in inventory" :key="item.key" class="property">
+                            <span class="property-name">{{ item.key }}</span>
+                            <span class="value-main">x {{ item.value }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-header">衣柜</h3>
+                    <div v-for="cat in wardrobeList" :key="cat.key">
+                        <div class="collapsible-header wardrobe-item" @click="toggle(cat.expandKey)">
+                            <span class="property-name">{{ cat.label }} ({{ cat.items.length }})</span>
+                            <span class="collapsible-arrow" :style="{ transform: isExpanded(cat.expandKey) ? 'rotate(90deg)' : 'rotate(0deg)' }">▶</span>
+                        </div>
+                        <div class="collapsible-content" :class="{ expanded: isExpanded(cat.expandKey) }">
+                            <div v-if="cat.items.length === 0" class="list-item" style="justify-content: center;">
+                                <span class="item-desc">空</span>
+                            </div>
+                            <div v-else class="property-list">
+                                <div v-for="item in cat.items" :key="item.name" class="list-item">
+                                    <span class="item-name">{{ item.name }}</span>
+                                    <span class="item-desc">{{ item.desc }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assets Section -->
+                <div class="section">
+                    <h3 class="section-header">资产</h3>
+                    <div v-for="cat in assetsList" :key="cat.key">
+                        <div class="collapsible-header wardrobe-item" @click="toggle(cat.expandKey)">
+                            <span class="property-name">{{ cat.label }} ({{ cat.items.length }})</span>
+                            <span class="collapsible-arrow" :style="{ transform: isExpanded(cat.expandKey) ? 'rotate(90deg)' : 'rotate(0deg)' }">▶</span>
+                        </div>
+                        <div class="collapsible-content" :class="{ expanded: isExpanded(cat.expandKey) }">
+                            <div v-if="cat.items.length === 0" class="list-item" style="justify-content: center;">
+                                <span class="item-desc">无</span>
+                            </div>
+                            <div v-else class="property-list">
+                                <div v-for="item in cat.items" :key="item.name" class="list-item">
+                                    <span class="item-name">{{ item.name }}</span>
+                                    <span class="item-desc">{{ item.desc }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 4: 外部讯息 -->
+            <div v-show="activeTab === 'Page4'" class="tab-content" id="Page4">
+                <div class="section">
+                    <h3 class="section-header">备忘录</h3>
+                    <div class="property-list">
+                        <div v-if="memos.length === 0" class="property"><span class="property-name">无待办事项</span></div>
+                        <div v-for="item in memos" :key="item.key" class="property">
+                            <span class="property-name">{{ item.key }}:</span>
+                            <span class="value-main">{{ item.value }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-header">任务信息</h3>
+                    <div v-if="taskList.length === 0" class="property"><span class="property-name">当前无任务</span></div>
+                    <div v-for="task in taskList" :key="task.name" class="section" style="margin-bottom: 15px;">
+                        <div class="collapsible-header wardrobe-item" @click="toggle(task.expandKey)">
+                            <span class="property-name">{{ task.name }}</span>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span class="task-status" :class="task.statusClass">{{ task.status }}</span>
+                                <span class="collapsible-arrow" :style="{ transform: isExpanded(task.expandKey) ? 'rotate(90deg)' : 'rotate(0deg)' }">▶</span>
+                            </div>
+                        </div>
+                        <div class="collapsible-content" :class="{ expanded: isExpanded(task.expandKey) }">
+                            <div class="property-list">
+                                <div v-for="field in task.fields" :key="field.key" class="property">
+                                    <span class="property-name">{{ field.key }}:</span>
+                                    <span class="value-main">{{ field.value }}</span>
+                                </div>
+                                <div class="property-name" style="margin-top: 10px; padding-left: 12px;">已保存证据:</div>
+                                <div v-if="task.evidences.length === 0" class="property"><span class="property-name">无</span></div>
+                                <div v-for="ev in task.evidences" :key="ev.key" class="property">
+                                    <span class="property-name">{{ ev.key }}:</span>
+                                    <span class="value-main">{{ ev.value }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-header collapsible" @click="toggle('exp')">
+                        <span>任务经验统计</span>
+                        <span class="collapsible-arrow" :style="{ transform: isExpanded('exp') ? 'rotate(90deg)' : 'rotate(0deg)' }">▶</span>
+                    </h3>
+                    <div class="collapsible-content no-border" :class="{ expanded: isExpanded('exp') }">
+                        <div class="property-grid">
+                            <div v-if="expList.length === 0" class="property"><span class="property-name">暂无记录</span></div>
+                            <div v-for="item in expList" :key="item.key" class="property">
+                                <span class="property-name">{{ item.shortKey }}:</span>
+                                <span class="value-main">{{ item.value }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-header collapsible" @click="toggle('titles')">
+                        <span>持有称号</span>
+                        <span class="collapsible-arrow" :style="{ transform: isExpanded('titles') ? 'rotate(90deg)' : 'rotate(0deg)' }">▶</span>
+                    </h3>
+                    <div class="collapsible-content no-border" :class="{ expanded: isExpanded('titles') }">
+                        <div class="property-list">
+                            <div class="property">
+                                <span class="property-name">经济学教授的玩物:</span>
+                                <span class="value-main" :class="titleToy.className">{{ titleToy.text }}</span>
+                            </div>
+                            <!-- 篮球部 -->
+                            <div class="property">
+                                <span class="property-name">篮球部助理:</span>
+                                <span class="value-main" :class="titleBasketAss.className">{{ titleBasketAss.text }}</span>
+                            </div>
+                            <div class="property">
+                                <span class="property-name">篮球部成员满意度:</span>
+                                <span class="value-main">{{ titleBasketSat }}</span>
+                            </div>
+                            <div class="property">
+                                <span class="property-name">篮球部日常任务:</span>
+                                <span class="value-main boolean-value" :class="isTrueClass(titleBasketDaily)">{{ titleBasketDaily ? "已开启" : "未开启" }}</span>
+                            </div>
+                            <!-- 游泳部 -->
+                            <div class="property">
+                                <span class="property-name">游泳部助理:</span>
+                                <span class="value-main" :class="titleSwimAss.className">{{ titleSwimAss.text }}</span>
+                            </div>
+                            <div class="property">
+                                <span class="property-name">游泳社成员满意度:</span>
+                                <span class="value-main">{{ titleSwimSat }}</span>
+                            </div>
+                            <div class="property">
+                                <span class="property-name">游泳社日常任务:</span>
+                                <span class="value-main boolean-value" :class="isTrueClass(titleSwimDaily)">{{ titleSwimDaily ? "已开启" : "未开启" }}</span>
+                            </div>
+                            <!-- 新增称号 -->
+                            <div class="property">
+                                <span class="property-name">遗主者:</span>
+                                <span class="value-main" :class="titleSurvivor.className">{{ titleSurvivor.text }}</span>
+                            </div>
+                            <div class="property">
+                                <span class="property-name">遗主者任务:</span>
+                                <span class="value-main boolean-value" :class="isTrueClass(titleSurvivorMission)">{{ titleSurvivorMission ? "已开启" : "未开启" }}</span>
+                            </div>
+                            <div class="property">
+                                <span class="property-name">天灾:</span>
+                                <span class="value-main" :class="titleScourge.className">{{ titleScourge.text }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-header">外部评价</h3>
+                    <div class="property-list evaluation">
+                        <div v-for="ev in evaluations" :key="ev.key" class="evaluation-item">
+                            <div class="evaluation-title">{{ ev.key }}</div>
+                            <div class="evaluation-text">{{ ev.value }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="module">
+        const { createApp, ref, reactive, computed, onMounted, watch, triggerRef, nextTick } = Vue;
+
+        // Simple Deep Get implementation if lodash is missing
+        function get(obj, path, defaultValue) {
+            if (!obj) return defaultValue;
+            const keys = path.split('.');
+            let result = obj;
+            for (const key of keys) {
+                if (result === null || result === undefined) return defaultValue;
+                result = result[key];
+            }
+            return result === undefined ? defaultValue : result;
+        }
+
+        const app = createApp({
+            setup() {
+                const STORAGE_KEY = "momo_status:active_tab";
+                const activeTab = ref("Page1");
+                const data = ref({});
+                // Expanded sections state
+                const expandedSections = reactive({ 
+                    exp: true,
+                    outfit: false,
+                    bodyMods: false,
+                    titles: false
+                });
+
+                function toggle(key) {
+                    expandedSections[key] = !expandedSections[key];
+                }
+
+                function isExpanded(key) {
+                    return !!expandedSections[key];
+                }
+
+                // Helper functions
+                const parseBoolean = (val, defaultVal = false) => {
+                    if (val === null || val === undefined) return defaultVal;
+                    if (typeof val === 'boolean') return val;
+                    return String(val).toLowerCase() === 'true';
+                };
+
+                const objectToArray = (obj) => {
+                    if (!obj || typeof obj !== 'object') return [];
+                    return Object.entries(obj).filter(([k]) => k !== '$meta');
+                };
+
+                const formatObject = (obj, emptyText = "无") => {
+                    const arr = objectToArray(obj);
+                    if (arr.length === 0) return emptyText;
+                    return arr.map(([k, v]) => `${k}: ${String(v)}`).join("； ");
+                };
+                
+                const formatObjectDetailed = (obj) => {
+                    const arr = objectToArray(obj);
+                    if (arr.length === 0) return "无";
+                    return arr.map(([k, v]) => v ? `${k}: ${String(v)}` : k).filter(Boolean).join("； ");
+                };
+
+                const formatUnlockStatus = (val, prefix = "", suffix = "") => {
+                    if (val === -1 || val === false || val == null) return { text: "未解锁", className: "locked-value" };
+                    if (val === true) return { text: "已解锁", className: "" };
+                    return { text: `${prefix}${String(val)}${suffix}`, className: "" };
+                };
+
+                const formatCurrency = (val) => {
+                    if (val == null || val === "") return "￥ 0";
+                    if (typeof val === 'number') return `￥ ${val}`;
+                    const str = String(val).trim();
+                    return str === "" ? "￥ 0" : `￥ ${str}`;
+                };
+
+                const weekMap = { 1:"星期一", 2:"星期二", 3:"星期三", 4:"星期四", 5:"星期五", 6:"星期六", 7:"星期日" };
+                const isTrueClass = (val) => val ? 'is-true' : 'is-false';
+                const booleanText = (val) => val ? '是' : '否';
+
+                // Data Fetching
+                async function loadData() {
+                    try {
+                        // Assuming SillyTavern environment
+                        if (typeof getChatMessages === 'function' && typeof getCurrentMessageId === 'function') {
+                            const msgs = await getChatMessages(getCurrentMessageId());
+                            const lastMsg = msgs && msgs.length > 0 ? msgs[0] : null;
+                            if (lastMsg && lastMsg.data && lastMsg.data.stat_data) {
+                                data.value = lastMsg.data.stat_data || {};
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Error loading chat data:", e);
+                        data.value = {};
+                    }
+                }
+
+                onMounted(async () => {
+                    // Restore Tab
+                    try {
+                        const savedTab = localStorage.getItem(STORAGE_KEY);
+                        if (savedTab && ['Page1', 'Page2', 'Page3', 'Page4'].includes(savedTab)) {
+                            activeTab.value = savedTab;
+                        }
+                    } catch (e) {}
+
+                    await loadData();
+
+                    // Listen for ST events
+                    try {
+                        if (typeof Mvu !== 'undefined') {
+                            // Using a generic event listener approach if possible, or standard window event
+                            const eventName = Mvu.events ? Mvu.events.VARIABLE_UPDATE_ENDED : 'variable_update_ended';
+                            if (typeof eventOn === 'function') {
+                                eventOn(eventName, () => loadData());
+                            }
+                        }
+                    } catch (e) {}
+                });
+
+                watch(activeTab, (newVal) => {
+                    try { localStorage.setItem(STORAGE_KEY, newVal); } catch(e) {}
+                });
+
+                // --- Computed Properties ---
+
+                // Page 1: World
+                const worldLocation = computed(() => String(get(data.value, "世界.地点", "未知")));
+                const worldWeather = computed(() => String(get(data.value, "世界.天气", "晴朗")));
+                const worldDate = computed(() => {
+                    const y = get(data.value, "世界.日期.年");
+                    const m = get(data.value, "世界.日期.月");
+                    const d = get(data.value, "世界.日期.日");
+                    return `${y||'YYYY'}年${String(m||'MM').padStart(2,'0')}月${String(d||'DD').padStart(2,'0')}日`;
+                });
+                const worldTime = computed(() => {
+                    const h = get(data.value, "世界.时间.小时");
+                    const m = get(data.value, "世界.时间.分钟");
+                    return `${String(h||'00').padStart(2,'0')}:${String(m||'00').padStart(2,'0')}`;
+                });
+                const worldWeek = computed(() => weekMap[String(get(data.value, "世界.星期"))] || "未知");
+
+                // Page 1: Core
+                const money = computed(() => formatCurrency(get(data.value, "墨墨.常规物品.金钱", 0)));
+                const credits = computed(() => String(get(data.value, "墨墨.常规物品.学分", 0)));
+                const exposure = computed(() => String(get(data.value, "墨墨.身份暴露度", 0)));
+                const statusState = computed(() => String(get(data.value, "墨墨.身处状态", "未知")));
+                const publisherSat = computed(() => String(get(data.value, "发布者.发布者满意度", 0)));
+                const taskCountdown = computed(() => `${get(data.value, "发布者.任务发放倒计时天数", 0)} 天`);
+                const inPenalty = computed(() => parseBoolean(get(data.value, "发布者.惩罚中", false)));
+                const penaltyInfo = computed(() => {
+                    const p = formatObject(get(data.value, "发布者.惩罚措施", {}), "查看详情");
+                    return p === "无" ? "查看详情" : p;
+                });
+
+                // Page 1: Appearance
+                const hairStyle = computed(() => String(get(data.value, "墨墨.外观数据.发型", "未知")));
+                const hairColor = computed(() => String(get(data.value, "墨墨.外观数据.发色", "未知"))); // New
+                const Eyebrowshape = computed(() => String(get(data.value, "墨墨.外观数据.眉形", "未知")));
+                const eyeColor = computed(() => String(get(data.value, "墨墨.外观数据.瞳色", "未知"))); // New
+                const eyeShape = computed(() => String(get(data.value, "墨墨.外观数据.眼型", "未知"))); // New
+                const faceShape = computed(() => String(get(data.value, "墨墨.外观数据.脸型", "未知"))); // New
+                const noseShape = computed(() => String(get(data.value, "墨墨.外观数据.鼻型", "未知"))); // New
+                const Lipshape = computed(() => String(get(data.value, "墨墨.外观数据.唇形", "未知")));
+                const bust = computed(() => String(get(data.value, "墨墨.外观数据.胸围", "未知")));
+                const waist = computed(() => String(get(data.value, "墨墨.外观数据.腰围", "未知")));
+                const hips = computed(() => String(get(data.value, "墨墨.外观数据.臀围", "未知")));
+                const Skincolor = computed(() => String(get(data.value, "墨墨.外观数据.肤色", "未知")));
+
+                // Page 1: Body Mods (Updated: List Style like Wardrobe)
+                const bodyModsList = computed(() => {
+                    const cats = [
+                        { key: "穿孔位置", label: "穿孔位置", path: "墨墨.身体改造.穿孔位置" },
+                        { key: "纹身", label: "纹身", path: "墨墨.身体改造.纹身" },
+                        { key: "器官改造", label: "器官改造", path: "墨墨.身体改造.器官改造" },
+                    ];
+                    return cats.map(c => {
+                        const raw = get(data.value, c.path, {});
+                        const items = objectToArray(raw).map(([k, v]) => ({
+                            name: k,
+                            desc: String(v)
+                        }));
+                        return { ...c, expandKey: `bodymod:${c.key}`, items };
+                    });
+                });
+
+                // Page 1: Outfit
+                const outfitTop = computed(() => formatObjectDetailed(get(data.value, "墨墨.服装状态.上装", {})));
+                const outfitBottom = computed(() => formatObjectDetailed(get(data.value, "墨墨.服装状态.下装", {})));
+                const outfitSuit = computed(() => formatObjectDetailed(get(data.value, "墨墨.服装状态.套装", {})));
+                const outfitBra = computed(() => formatObjectDetailed(get(data.value, "墨墨.服装状态.内衣", {})));
+                const outfitPanties = computed(() => formatObjectDetailed(get(data.value, "墨墨.服装状态.内裤", {})));
+                const outfitSocks = computed(() => formatObjectDetailed(get(data.value, "墨墨.服装状态.袜子", {})));
+                const outfitShoes = computed(() => formatObjectDetailed(get(data.value, "墨墨.服装状态.鞋子", {})));
+                const outfitAcc = computed(() => formatObjectDetailed(get(data.value, "墨墨.服装状态.饰品", {})));
+                const outfitHandheld = computed(() => formatObjectDetailed(get(data.value, "墨墨.服装状态.手持物品", {}))); // New
+                const outfitPiercing = computed(() => formatObjectDetailed(get(data.value, "墨墨.服装状态.穿孔道具", {}))); // New
+                const outfitToys = computed(() => formatObjectDetailed(get(data.value, "墨墨.服装状态.性玩具", {})));
+                const outfitSpecial = computed(() => formatObjectDetailed(get(data.value, "墨墨.服装状态.特殊分类", {})));
+
+                // Page 2: Sex Stats
+                const depravity = computed(() => String(get(data.value, "墨墨.色情状态.堕落值", 0)));
+                const depravityLevel = computed(() => String(get(data.value, "墨墨.色情状态.堕落等级", 0)));
+                const lust = computed(() => String(get(data.value, "墨墨.色情状态.性欲", 0)));
+                const totalExposure = computed(() => String(get(data.value, "墨墨.色情状态.暴露值", 0)));
+                const semenWomb = computed(() => `${get(data.value, "墨墨.色情状态.宫内精液", 0)}ml`);
+                const semenAnal = computed(() => `${get(data.value, "墨墨.色情状态.肛门精液", 0)}ml`);
+                const juices = computed(() => `${get(data.value, "墨墨.色情状态.淫水数量", 0)}ml`);
+                const semenExternal = computed(() => objectToArray(get(data.value, "墨墨.色情状态.外部精液", {})).map(([k, v]) => ({ key: k, value: v??0 })));
+
+                // Page 2: Body Records
+                const sexExp = computed(() => `次数: ${get(data.value, "墨墨.身体色情记录.性经验", 0)}`);
+                const orgasms = computed(() => String(get(data.value, "墨墨.身体色情记录.高潮次数", 0)));
+                const virginVaginal = computed(() => parseBoolean(get(data.value, "墨墨.身体色情记录.阴道处女", true), true));
+                const virginAnal = computed(() => parseBoolean(get(data.value, "墨墨.身体色情记录.肛门处女", true), true));
+                const devMouth = computed(() => String(get(data.value, "墨墨.身体色情记录.口穴开发度", 0)));
+                const devPussy = computed(() => String(get(data.value, "墨墨.身体色情记录.私处开发度", 0)));
+                const devAnal = computed(() => String(get(data.value, "墨墨.身体色情记录.肛门开发度", 0)));
+                const devBoobs = computed(() => String(get(data.value, "墨墨.身体色情记录.乳房开发度", 0)));
+                const sensButt = computed(() => String(get(data.value, "墨墨.身体色情记录.屁股敏感度", 0)));
+
+                // Page 3: Inventory
+                const inventory = computed(() => objectToArray(get(data.value, "墨墨.背包.物品", {})).map(([k, v]) => ({ key: k, value: v??0 })));
+                
+                // Page 3: Wardrobe (Updated)
+                const wardrobeList = computed(() => {
+                    const cats = [
+                        { key: "上装", label: "上装", path: "墨墨.衣柜.上装" },
+                        { key: "下装", label: "下装", path: "墨墨.衣柜.下装" },
+                        { key: "套装", label: "套装", path: "墨墨.衣柜.套装" },
+                        { key: "内衣", label: "内衣", path: "墨墨.衣柜.内衣" },
+                        { key: "内裤", label: "内裤", path: "墨墨.衣柜.内裤" },
+                        { key: "袜子", label: "袜子", path: "墨墨.衣柜.袜子" },
+                        { key: "鞋子", label: "鞋子", path: "墨墨.衣柜.鞋子" },
+                        { key: "饰品", label: "饰品", path: "墨墨.衣柜.饰品" },
+                        { key: "手持物品", label: "手持物品", path: "墨墨.衣柜.手持物品" }, // New
+                        { key: "穿孔道具", label: "穿孔道具", path: "墨墨.衣柜.穿孔道具" }, // New
+                        { key: "性玩具", label: "性玩具", path: "墨墨.衣柜.性玩具" },
+                        { key: "特殊分类", label: "特殊分类", path: "墨墨.衣柜.特殊分类" },
+                    ];
+                    return cats.map(c => {
+                        const raw = get(data.value, c.path, {});
+                        const items = objectToArray(raw).map(([k, v]) => ({
+                            name: k,
+                            desc: (typeof v === 'string' || typeof v === 'number') 
+                                ? String(v).split("(基础暴露值")[0].trim() 
+                                : "无效描述"
+                        }));
+                        return { ...c, expandKey: `wardrobe:${c.key}`, items };
+                    });
+                });
+
+                // Page 3: Assets (New)
+                const assetsList = computed(() => {
+                    const cats = [
+                        { key: "载具", label: "载具", path: "墨墨.资产.载具" },
+                        { key: "房产", label: "房产", path: "墨墨.资产.房产" },
+                    ];
+                    return cats.map(c => {
+                        const raw = get(data.value, c.path, {});
+                        const items = objectToArray(raw).map(([k, v]) => ({
+                            name: k,
+                            desc: String(v)
+                        }));
+                        return { ...c, expandKey: `assets:${c.key}`, items };
+                    });
+                });
+
+                // Page 4: Memos
+                const memos = computed(() => objectToArray(get(data.value, "墨墨.备忘录", {})).map(([k, v]) => ({ key: k, value: String(v) })));
+
+                // Page 4: Tasks
+                const taskList = computed(() => {
+                    const tasks = get(data.value, "任务", {});
+                    return Object.entries(tasks)
+                        .filter(([k]) => k !== '$meta' && k !== 'template')
+                        .map(([name, tData]) => {
+                            const t = tData || {};
+                            const status = String(t.任务状态 || "未知");
+                            const fields = [
+                                { key: "任务类型", value: t.任务类型 },
+                                { key: "时长任务", value: t.时长任务 ? "是" : "否" },
+                                { key: "地点", value: t.任务地点 },
+                                { key: "服装要求", value: t.任务服装要求 },
+                                { key: "基础目标", value: t.基础任务目标 },
+                                { key: "完成标准", value: formatObject(t.基础任务完成标准, "无") },
+                                { key: "额外内容", value: t.额外任务内容 || "无" },
+                                { key: "任务进度", value: t.任务进度 },
+                                { key: "失败判定", value: t.任务失败判定 },
+                                { key: "失败惩罚", value: formatObject(t.任务失败惩罚, "无") },
+                                { key: "截止时间", value: t.任务结束时间 },
+                                { key: "基础报酬", value: formatCurrency(t.任务基础报酬) },
+                                { key: "额外奖励", value: formatCurrency(t.额外任务奖励 || 0) },
+                            ].map(f => ({ ...f, value: f.value === undefined ? "" : String(f.value) }))
+                             .filter(f => f.value !== "" && f.value !== "无");
+
+                            const evidences = objectToArray(t.当前任务已保存证据 || {}).map(([k,v]) => ({ key: k, value: String(v) }));
+                            
+                            const statusMap = { '未开始': 'not-started', '已接受': 'in-progress', '进行中': 'in-progress', '已完成': 'completed', '已失败': 'failed' };
+
+                            return {
+                                name,
+                                status,
+                                statusClass: statusMap[status] || '',
+                                fields,
+                                evidences,
+                                expandKey: `task:${name}`
+                            };
+                        });
+                });
+
+                // Auto expand active tasks
+                watch(taskList, (newVal) => {
+                    for(const t of newVal) {
+                        if (expandedSections[t.expandKey] === undefined && (t.status === '已接受' || t.status === '进行中')) {
+                            expandedSections[t.expandKey] = true;
+                        }
+                    }
+                }, { immediate: true });
+
+                const expList = computed(() => objectToArray(get(data.value, "墨墨.任务经验", {})).map(([k,v]) => ({ key: k, shortKey: k.replace("任务经验", ""), value: v??0 })));
+
+                // Page 4: Titles
+                const titleToy = computed(() => formatUnlockStatus(get(data.value, "墨墨.称号.经济学教授的玩物", -1), "好感度: "));
+                const titleBasketAss = computed(() => formatUnlockStatus(get(data.value, "墨墨.称号.篮球部助理", -1), "进度: "));
+                const titleBasketSat = computed(() => String(get(data.value, "墨墨.称号.篮球部成员满意度", 0)));
+                const titleBasketDaily = computed(() => parseBoolean(get(data.value, "墨墨.称号.篮球部日常任务", false)));
+                const titleSwimAss = computed(() => formatUnlockStatus(get(data.value, "墨墨.称号.游泳部助理", -1), "进度: "));
+                const titleSwimSat = computed(() => String(get(data.value, "墨墨.称号.游泳社成员满意度", 0)));
+                const titleSwimDaily = computed(() => parseBoolean(get(data.value, "墨墨.称号.游泳社日常任务", false)));
+                // New Titles
+                const titleSurvivor = computed(() => formatUnlockStatus(get(data.value, "墨墨.称号.遗主者", -1), "进度: "));
+                const titleSurvivorMission = computed(() => parseBoolean(get(data.value, "墨墨.称号.遗主者任务", false)));
+                const titleScourge = computed(() => formatUnlockStatus(get(data.value, "墨墨.称号.天灾", -1), "进度: "));
+
+                // Page 4: Evaluations
+                const evaluations = computed(() => [
+                    { key: "同学评价", value: String(get(data.value, "墨墨.外部评价.同学评价", "暂无")) },
+                    { key: "老师评价", value: String(get(data.value, "墨墨.外部评价.老师评价", "暂无")) },
+                    { key: "暗网评价", value: String(get(data.value, "墨墨.外部评价.暗网评价", "暂无")) },
+                    { key: "互联网评价", value: String(get(data.value, "墨墨.外部评价.互联网评价", "暂无")) }, // New
+                ]);
+
+                return {
+                    activeTab, toggle, isExpanded,
+                    worldLocation, worldDate, worldTime, worldWeek, worldWeather,
+                    money, credits, exposure, statusState, publisherSat, taskCountdown, inPenalty, penaltyInfo,
+                    hairStyle, hairColor, Eyebrowshape, eyeColor, eyeShape, faceShape, noseShape, Lipshape, bust, waist, hips, Skincolor,
+                    bodyModsList, // Updated
+                    outfitTop, outfitBottom, outfitSuit, outfitBra, outfitPanties, outfitSocks, outfitShoes, outfitAcc, outfitHandheld, outfitPiercing, outfitToys, outfitSpecial,
+                    depravity, depravityLevel, lust, totalExposure, semenWomb, semenAnal, juices, semenExternal,
+                    sexExp, orgasms, virginVaginal, virginAnal, devMouth, devPussy, devAnal, devBoobs, sensButt,
+                    isTrueClass, booleanText,
+                    inventory, wardrobeList, assetsList,
+                    memos, taskList, expList,
+                    titleToy, titleBasketAss, titleBasketSat, titleBasketDaily, titleSwimAss, titleSwimSat, titleSwimDaily,
+                    titleSurvivor, titleSurvivorMission, titleScourge,
+                    evaluations
+                };
+            }
+        });
+
+        // Initialize when global objects are ready
+        const initApp = async () => {
+            if (typeof waitGlobalInitialized === 'function') {
+                await waitGlobalInitialized("Mvu");
+            }
+            app.mount("#app");
+        };
+        initApp();
+    </script>
+</body>
