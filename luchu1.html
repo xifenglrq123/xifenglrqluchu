@@ -1,0 +1,234 @@
+<head>
+  <script type="module">
+    const e = Vue,
+      t = { id: "status-card", class: "status-card" },
+      a = { class: "tabs" },
+      l = { class: "tab-container" },
+      n = (s) => (0, e.openBlock)(), (0, e.createElementBlock)("div", { class: "section" }, s),
+      r = { class: "property-grid" },
+      o = { class: "value-main" },
+      p = { class: "property-list" };
+
+    const qt = (0, e.defineComponent)({
+      __name: "app",
+      setup() {
+        const activeTab = (0, e.ref)("Page1");
+        const statData = (0, e.ref)({});
+        const uiState = (0, e.reactive)({ exp: true, outfit: true, titles: true, bodyMod: true, assets: true });
+
+        function toggle(key) { uiState[key] = !uiState[key]; }
+        function getVal(path, def) { return _.get(statData.value, path, def); }
+        function isTrue(val) { return !!val; }
+
+        async function refreshData() {
+          try {
+            const msgs = await getChatMessages(getCurrentMessageId());
+            statData.value = (msgs && msgs[0]?.data?.stat_data) || {};
+          } catch (err) { console.error("Data error:", err); }
+        }
+
+        (0, e.onMounted)(async () => {
+          const saved = localStorage.getItem("momo_status:active_tab");
+          if (saved) activeTab.value = saved;
+          await refreshData();
+          if (typeof Mvu !== "undefined") eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, refreshData);
+        });
+
+        (0, e.watch)(activeTab, (val) => localStorage.setItem("momo_status:active_tab", val));
+
+        // Computed Properties
+        const worldDate = (0, e.computed)(() => `${getVal("世界.日期", "1")}日`);
+        const worldTime = (0, e.computed)(() => `${String(getVal("世界.时间.小时", "00")).padStart(2, '0')}:${String(getVal("世界.时间.分钟", "00")).padStart(2, '0')}`);
+        const worldWeek = (0, e.computed)(() => ["", "一", "二", "三", "四", "五", "六", "日"][getVal("世界.星期", 1)]);
+
+        const appearanceList = (0, e.computed)(() => [
+          { k: "发色/发型", v: `${getVal("墨墨.外观数据.发色", "-")}/${getVal("墨墨.外观数据.发型", "-")}` },
+          { k: "身高", v: `${getVal("墨墨.外观数据.身高", "-")}cm` },
+          { k: "眉形/瞳色", v: `${getVal("墨墨.外观数据.眉形", "-")}/${getVal("墨墨.外观数据.瞳色", "-")}` },
+          { k: "眼型/脸型", v: `${getVal("墨墨.外观数据.眼型", "-")}/${getVal("墨墨.外观数据.脸型", "-")}` },
+          { k: "三围/罩杯", v: `B:${getVal("墨墨.外观数据.胸围差", "-")}(${getVal("墨墨.外观数据.罩杯", "-")}) W:${getVal("墨墨.外观数据.腰围", "-")} H:${getVal("墨墨.外观数据.臀围", "-")}` },
+          { k: "肤色/唇形", v: `${getVal("墨墨.外观数据.肤色", "-")}/${getVal("墨墨.外观数据.唇形", "-")}` }
+        ]);
+
+        const bodyModList = (0, e.computed)(() => {
+          const mods = [];
+          const piercing = getVal("墨墨.身体改造.身体穿刺", {});
+          Object.entries(piercing).forEach(([k, v]) => { if(k!=='$meta') mods.push({k, v}) });
+          const tattoos = getVal("墨墨.身体改造.纹身", {});
+          Object.entries(tattoos).forEach(([k, v]) => { if(k!=='$meta') mods.push({k, v}) });
+          return mods;
+        });
+
+        const assetsList = (0, e.computed)(() => {
+          const res = [];
+          const houses = getVal("墨墨.资产.房产", {});
+          Object.entries(houses).forEach(([k, v]) => { if(k!=='$meta') res.push({k: "房产", v: k}) });
+          const cars = getVal("墨墨.资产.载具", {});
+          Object.entries(cars).forEach(([k, v]) => { if(k!=='$meta') res.push({k: "载具", v: k}) });
+          return res;
+        });
+
+        const tasks = (0, e.computed)(() => {
+          return Object.entries(getVal("任务", {})).filter(([k]) => k !== "$meta" && k !== "template").map(([name, data]) => ({
+            name, status: data.任务状态, fields: [
+              { k: "地点", v: data.任务地点 },
+              { k: "目标", v: data.基础任务目标 },
+              { k: "进度", v: data.任务进度 }
+            ], expandKey: `task:${name}`
+          }));
+        });
+
+        return { activeTab, statData, uiState, toggle, getVal, isTrue, worldDate, worldTime, worldWeek, appearanceList, bodyModList, assetsList, tasks };
+      }
+    }).mount("#app");
+  </script>
+  <style>
+    @import url(https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap);
+    :root {
+      --bg-color: transparent;
+      --card-bg-color: rgba(255, 248, 250, 0.95);
+      --border-color: rgba(255, 192, 203, 0.5);
+      --text-primary-color: #8b576e;
+      --text-secondary-color: #b48a9d;
+      --accent-color: #f472b6;
+      --accent-soft: rgba(244, 114, 182, 0.15);
+      --item-bg-color: rgba(255, 255, 255, 0.65);
+      --item-border-color: rgba(255, 192, 203, 0.4);
+    }
+    body { font-family: "Noto Sans SC", sans-serif; margin: 0; background: var(--bg-color); color: var(--text-primary-color); }
+    .status-card { width: 100%; height: 100%; background: var(--card-bg-color); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; backdrop-filter: blur(12px); border: 1px solid var(--border-color); font-size: 14px; }
+    .tabs { display: flex; background: rgba(255, 240, 244, 0.9); border-bottom: 1px solid var(--border-color); }
+    .tab-button { flex: 1; padding: 12px; border: none; background: none; color: var(--text-secondary-color); cursor: pointer; transition: 0.3s; font-weight: 500; }
+    .tab-button.active { color: var(--accent-color); font-weight: 700; box-shadow: inset 0 -2px 0 var(--accent-color); }
+    .tab-container { flex: 1; overflow-y: auto; padding: 15px; }
+    .section { margin-bottom: 20px; }
+    .section-header { font-weight: 700; color: var(--accent-color); border-bottom: 1px solid var(--border-color); padding-bottom: 5px; margin-bottom: 10px; display: flex; justify-content: space-between; cursor: pointer; }
+    .property-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; }
+    .property { background: var(--item-bg-color); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--item-border-color); display: flex; justify-content: space-between; align-items: center; }
+    .property-name { color: var(--text-secondary-color); font-size: 0.9em; }
+    .value-main { font-weight: 500; }
+    .collapsible-content { overflow: hidden; transition: 0.3s; }
+    .expanded { max-height: 1000px; }
+    .collapsed { max-height: 0; }
+    .evaluation-item { background: var(--item-bg-color); padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--item-border-color); }
+    .eval-title { font-weight: 700; font-size: 0.85em; color: var(--accent-color); margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="status-card">
+      <div class="tabs">
+        <button v-for="p in ['Page1','Page2','Page3','Page4']" :class="['tab-button', {active: activeTab===p}]" @click="activeTab=p">
+          {{ {Page1:'状态', Page2:'记录', Page3:'物品', Page4:'讯息'}[p] }}
+        </button>
+      </div>
+
+      <div class="tab-container">
+        <!-- Page 1: Core Status -->
+        <div v-if="activeTab==='Page1'">
+          <div class="section">
+            <div class="section-header">世界与核心</div>
+            <div class="property-grid">
+              <div class="property"><span class="property-name">地点</span><span class="value-main">{{getVal('世界.地点','未知')}}</span></div>
+              <div class="property"><span class="property-name">日期</span><span class="value-main">{{worldDate}} (周{{worldWeek}}) {{worldTime}}</span></div>
+              <div class="property"><span class="property-name">天气</span><span class="value-main">{{getVal('世界.天气','-')}}</span></div>
+              <div class="property"><span class="property-name">金钱</span><span class="value-main">￥{{getVal('墨墨.常规物品.金钱',0)}}</span></div>
+              <div class="property"><span class="property-name">学分</span><span class="value-main">{{getVal('墨墨.常规物品.学分',0)}}</span></div>
+              <div class="property"><span class="property-name">身处状态</span><span class="value-main">{{getVal('墨墨.身处状态','-')}}</span></div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-header" @click="toggle('outfit')">外观与着装 <span>{{uiState.outfit?'▼':'▶'}}</span></div>
+            <div :class="['collapsible-content', {expanded: uiState.outfit, collapsed: !uiState.outfit}]">
+              <div class="property-grid">
+                <div v-for="item in appearanceList" class="property">
+                  <span class="property-name">{{item.k}}</span><span class="value-main">{{item.v}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section" v-if="bodyModList.length > 0">
+            <div class="section-header" @click="toggle('bodyMod')">身体改造 <span>{{uiState.bodyMod?'▼':'▶'}}</span></div>
+            <div :class="['collapsible-content', {expanded: uiState.bodyMod, collapsed: !uiState.bodyMod}]">
+              <div class="property-grid">
+                <div v-for="mod in bodyModList" class="property">
+                  <span class="property-name">{{mod.k}}</span><span class="value-main">{{mod.v}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section" v-if="assetsList.length > 0">
+            <div class="section-header" @click="toggle('assets')">资产清单 <span>{{uiState.assets?'▼':'▶'}}</span></div>
+            <div :class="['collapsible-content', {expanded: uiState.assets, collapsed: !uiState.assets}]">
+              <div class="property-grid">
+                <div v-for="asset in assetsList" class="property">
+                  <span class="property-name">{{asset.k}}</span><span class="value-main">{{asset.v}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page 2: Sex Record -->
+        <div v-if="activeTab==='Page2'">
+          <div class="section">
+            <div class="section-header">色情数值</div>
+            <div class="property-grid">
+              <div class="property"><span class="property-name">堕落等级</span><span class="value-main">Lv.{{getVal('墨墨.色情状态.堕落等级',0)}}</span></div>
+              <div class="property"><span class="property-name">性欲</span><span class="value-main">{{getVal('墨墨.色情状态.性欲',0)}}/100</span></div>
+              <div class="property"><span class="property-name">性经验</span><span class="value-main">{{getVal('墨墨.身体色情记录.性经验',0)}}次</span></div>
+              <div class="property"><span class="property-name">高潮次数</span><span class="value-main">{{getVal('墨墨.身体色情记录.高潮次数',0)}}次</span></div>
+            </div>
+          </div>
+          <div class="section">
+            <div class="section-header">开发进度</div>
+            <div class="property-grid">
+              <div class="property"><span class="property-name">口穴开发</span><span class="value-main">{{getVal('墨墨.身体色情记录.口穴开发度',0)}}</span></div>
+              <div class="property"><span class="property-name">私处开发</span><span class="value-main">{{getVal('墨墨.身体色情记录.私处开发度',0)}}</span></div>
+              <div class="property"><span class="property-name">肛门开发</span><span class="value-main">{{getVal('墨墨.身体色情记录.肛门开发度',0)}}</span></div>
+              <div class="property"><span class="property-name">乳房开发</span><span class="value-main">{{getVal('墨墨.身体色情记录.乳房开发度',0)}}</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page 3: Backpack -->
+        <div v-if="activeTab==='Page3'">
+          <div class="section">
+            <div class="section-header">背包物品</div>
+            <div class="property-grid">
+              <div v-for="(v, k) in getVal('墨墨.背包.物品', {})" v-show="k!=='$meta'" class="property">
+                <span class="property-name">{{k}}</span><span class="value-main">x{{v}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page 4: External -->
+        <div v-if="activeTab==='Page4'">
+          <div class="section">
+            <div class="section-header">外部评价</div>
+            <div v-for="(v, k) in getVal('墨墨.外部评价', {})" v-show="k!=='$meta'" class="evaluation-item">
+              <div class="eval-title">{{k}}</div>
+              <div class="eval-text">{{v}}</div>
+            </div>
+          </div>
+          <div class="section">
+            <div class="section-header" @click="toggle('exp')">任务经验统计 <span>{{uiState.exp?'▼':'▶'}}</span></div>
+            <div :class="['collapsible-content', {expanded: uiState.exp, collapsed: !uiState.exp}]">
+              <div class="property-grid">
+                <div v-for="(v, k) in getVal('墨墨.任务经验', {})" v-show="k!=='$meta'" class="property">
+                  <span class="property-name">{{k.replace('任务经验','')}}</span><span class="value-main">{{v}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+--- END OF FILE text/html ---
