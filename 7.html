@@ -1,0 +1,536 @@
+--- START OF FILE text/html ---
+
+<head>
+  <script type="module">
+    const e = Vue,
+      t = { id: "status-card", class: "status-card" },
+      a = { class: "tabs" },
+      l = { class: "tab-container" },
+      n = { class: "section" },
+      r = { class: "property-grid" },
+      s = { class: "property" },
+      o = { class: "value-main" },
+      c = { class: "property" },
+      p = { class: "value-main" },
+      i = { class: "property" },
+      m = { class: "value-main" },
+      d = { class: "property" },
+      u = { class: "value-main" },
+      y = { class: "property" },
+      v = { class: "value-main" },
+      E = { class: "section" },
+      g = { class: "property-grid" },
+      N = { class: "property" },
+      V = { class: "value-main" },
+      f = { class: "property" },
+      k = { class: "value-main" },
+      S = { class: "property" },
+      b = { class: "value-main" },
+      D = { class: "property" },
+      h = { class: "value-main" },
+      B = { class: "property" },
+      C = { class: "value-main" },
+      x = { class: "property" },
+      P = { class: "value-main" },
+      w = { key: 0, style: { "margin-top": "10px" } },
+      M = {
+        class: "property",
+        style: {
+          "border-color": "var(--warning-color)",
+          "background-color": "rgba(239, 68, 68, 0.1)",
+        },
+      },
+      K = {
+        class: "value-main",
+        style: { color: "var(--warning-color)", "font-size": "0.9em" },
+      },
+      L = { class: "section" },
+      F = { class: "property-grid" },
+      j = { class: "property" },
+      A = { class: "value-main" },
+      I = { class: "property" },
+      Y = { class: "value-main" },
+      O = { class: "property" },
+      H = { class: "value-main" },
+      R = { class: "property" },
+      G = { class: "value-main" },
+      N_HC = { class: "property" }, V_HC = { class: "value-main" },
+      N_EB = { class: "property" }, V_EB = { class: "value-main" },
+      N_EC = { class: "property" }, V_EC = { class: "value-main" },
+      N_ES = { class: "property" }, V_ES = { class: "value-main" },
+      N_FS = { class: "property" }, V_FS = { class: "value-main" },
+      N_NS = { class: "property" }, V_NS = { class: "value-main" },
+      N_LS = { class: "property" }, V_LS = { class: "value-main" },
+      N_SC = { class: "property" }, V_SC = { class: "value-main" },
+      BM_S = { class: "section" },
+      T = { class: "section" },
+      U = { id: "outfit-section", class: "property-list" },
+      q = { class: "property" },
+      J = { class: "value-main outfit-value" },
+      Q = { class: "property" },
+      W = { class: "value-main outfit-value" },
+      X = { class: "property" },
+      Z = { class: "value-main outfit-value" },
+      ee = { class: "property" },
+      te = { class: "value-main outfit-value" },
+      ae = { class: "property" },
+      le = { class: "value-main outfit-value" },
+      ne = { class: "property" },
+      re = { class: "value-main outfit-value" },
+      se = { class: "property" },
+      oe = { class: "value-main outfit-value" },
+      ce = { class: "property" },
+      pe = { class: "value-main outfit-value" },
+      ie = { class: "property" },
+      me = { class: "value-main outfit-value" },
+      de = { class: "property" },
+      ue = { class: "value-main outfit-value" },
+      ye = { class: "section" },
+      ve = { class: "property-grid" },
+      Ee = { class: "property" },
+      ge = { class: "value-main" },
+      Ne = { class: "property" },
+      Ve = { class: "value-main" },
+      fe = { class: "property" },
+      ke = { class: "value-main" },
+      Se = { class: "property" },
+      be = { class: "value-main" },
+      De = { class: "property" },
+      he = { class: "value-main" },
+      _e = { class: "property" },
+      Be = { class: "value-main" },
+      Ce = { class: "property" },
+      xe = { class: "value-main" },
+      Pe = { class: "section" },
+      we = { class: "property-list" },
+      ze = { key: 0, class: "property" },
+      $e = { class: "property-name" },
+      Me = { class: "value-main" },
+      Ke = { class: "section" },
+      Le = { class: "property-grid" },
+      Fe = { class: "property" },
+      je = { class: "value-main" },
+      Ae = { class: "property" },
+      Ie = { class: "value-main" },
+      Ye = { class: "property" },
+      Oe = { class: "property" },
+      He = { class: "property" },
+      Re = { class: "value-main" },
+      Ge = { class: "property" },
+      Te = { class: "value-main" },
+      Ue = { class: "property" },
+      qe = { class: "value-main" },
+      Je = { class: "property" },
+      Qe = { class: "value-main" },
+      We = { class: "property" },
+      Xe = { class: "value-main" },
+      Ze = { class: "section" },
+      et = { class: "property-list" },
+      tt = { key: 0, class: "property" },
+      at = { class: "property-name" },
+      lt = { class: "value-main" },
+      nt = { class: "section" },
+      rt = ["onClick"],
+      st = { class: "property-name" },
+      ot = { key: 0, class: "list-item", style: { "justify-content": "center" } },
+      ct = { key: 1, class: "property-list" },
+      pt = { class: "item-name" },
+      it = { class: "item-desc" },
+      AS_S = { class: "section" },
+      mt = { class: "section" },
+      dt = { class: "property-list" },
+      ut = { key: 0, class: "property" },
+      yt = { class: "property-name" },
+      vt = { class: "value-main" },
+      Et = { class: "section" },
+      gt = { key: 0, class: "property" },
+      Nt = ["onClick"],
+      Vt = { class: "property-name" },
+      ft = { style: { display: "flex", "align-items": "center", gap: "10px" } },
+      kt = { class: "property-list" },
+      St = { class: "property-name" },
+      bt = { class: "value-main" },
+      Dt = { key: 0, class: "property" },
+      ht = { class: "property-name", style: { "flex-shrink": "1" } },
+      _t = { class: "value-main" },
+      Bt = { class: "section" },
+      Ct = { class: "property-grid" },
+      xt = { key: 0, class: "property" },
+      Pt = { class: "property-name" },
+      wt = { class: "value-main" },
+      zt = { class: "section" },
+      $t = { class: "property-list" },
+      Mt = { class: "property" },
+      Kt = { class: "property" },
+      Lt = { class: "property" },
+      Ft = { class: "value-main" },
+      jt = { class: "property" },
+      At = { class: "property" },
+      It = { class: "property" },
+      Yt = { class: "value-main" },
+      Ot = { class: "property" },
+      N_T1 = { class: "property" }, N_T2 = { class: "property" }, N_T3 = { class: "property" },
+      Ht = { class: "section" },
+      Rt = { class: "property-list evaluation" },
+      Gt = { class: "evaluation-title" },
+      Tt = { class: "evaluation-text" },
+      Ut = "momo_status:active_tab",
+      qt = (0, e.defineComponent)({
+        __name: "app",
+        setup(qt) {
+          const Jt = (0, e.ref)("Page1");
+          function Qt(t) { Jt.value = t; (0, e.triggerRef)(Jt); }
+          const Wt = (0, e.ref)({}), Xt = (0, e.reactive)({ exp: !0, bodyMods: !1 });
+          function Zt(e) { return !0 === Xt[e]; }
+          function ea(e) { Xt[e] = !Xt[e]; }
+          function ta(e, t = !1) { return null == e ? t : "boolean" == typeof e ? e : "true" === String(e).toLowerCase(); }
+          function aa(e) { return e && "object" == typeof e ? Object.entries(e).filter(([e]) => "$meta" !== e) : []; }
+          function la(e, t = "无") { const a = aa(e); return 0 === a.length ? t : a.map(([e, t]) => `${e}: ${String(t)}`).join("； "); }
+          function na(e) { const t = aa(e); return 0 === t.length ? "无" : t.map(([e, t]) => (t ? `${e}: ${String(t)}` : e)).filter(Boolean).join("； "); }
+          const ra = { 1: "星期一", 2: "星期二", 3: "星期三", 4: "星期四", 5: "星期五", 6: "星期六", 7: "星期日" };
+          function sa(e) { return e ? "is-true" : "is-false"; }
+          function oa(e, t = "", a = "") { return -1 === e || !1 === e || null == e ? { text: "未解锁", className: "locked-value" } : !0 === e ? { text: "已解锁" } : { text: `${t}${String(e)}${a}` }; }
+          function ca(e) { if (null == e || "" === e) return "￥ 0"; if ("number" == typeof e) return `￥ ${e}`; const t = String(e).trim(); return "" === t ? "￥ 0" : `￥ ${t}`; }
+          async function pa() {
+            try { const e = await getChatMessages(getCurrentMessageId()), t = e && e.length > 0 && e[0].data ? e[0].data.stat_data : {}; Wt.value = t || {}; }
+            catch (e) { console.error("加载失败:", e); Wt.value = {}; }
+          }
+          (0, e.onMounted)(async () => {
+            try { const e = localStorage.getItem(Ut); ("Page1" === e || "Page2" === e || "Page3" === e || "Page4" === e) && (Jt.value = e); } catch {}
+            await pa();
+            try { "undefined" != typeof Mvu && eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, () => { pa(); }); } catch {}
+          });
+          (0, e.watch)(Jt, (e) => { try { localStorage.setItem(Ut, e); } catch {} });
+          
+          const ia = (0, e.computed)(() => String(_.get(Wt.value, "世界.地点", "未知"))),
+            ma = (0, e.computed)(() => String(_.get(Wt.value, "世界.天气", "晴朗"))),
+            da = (0, e.computed)(() => {
+              const y = _.get(Wt.value, "世界.日期", "1");
+              return `第 ${y} 天`;
+            }),
+            ua = (0, e.computed)(() => {
+              const h = _.get(Wt.value, "世界.时间.小时", "00"), m = _.get(Wt.value, "世界.时间.分钟", "00");
+              return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+            }),
+            ya = (0, e.computed)(() => ra[String(_.get(Wt.value, "世界.星期", "1"))] || "未知"),
+            va = (0, e.computed)(() => `￥ ${String(_.get(Wt.value, "墨墨.常规物品.金钱", 0))}`),
+            Ea = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.常规物品.学分", 0))),
+            ga = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.身份暴露度", 0))),
+            Na = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.身处状态", "未知"))),
+            Va = (0, e.computed)(() => String(_.get(Wt.value, "发布者.发布者满意度", 0))),
+            fa = (0, e.computed)(() => `${String(_.get(Wt.value, "发布者.任务发放倒计时天数", 0))} 天`),
+            ka = (0, e.computed)(() => ta(_.get(Wt.value, "发布者.惩罚中", !1))),
+            Sa = (0, e.computed)(() => la(_.get(Wt.value, "发布者.惩罚措施", {}), "查看详情")),
+            ba = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.外观数据.发型", "未知"))),
+            hc = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.外观数据.发色", "未知"))),
+            eb = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.外观数据.眉形", "未知"))),
+            ec = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.外观数据.瞳色", "未知"))),
+            es = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.外观数据.眼型", "未知"))),
+            fs = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.外观数据.脸型", "未知"))),
+            ns = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.外观数据.鼻型", "未知"))),
+            ls = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.外观数据.唇形", "未知"))),
+            Da = (0, e.computed)(() => `D罩杯 (差${String(_.get(Wt.value, "墨墨.外观数据.胸围差", 0))}cm)`),
+            ha = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.外观数据.腰围", "未知"))),
+            _a = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.外观数据.臀围", "未知"))),
+            sc = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.外观数据.肤色", "未知"))),
+            
+            bml = (0, e.computed)(() => [
+                { key: "身体穿刺", label: "身体穿刺", path: "墨墨.身体改造.身体穿刺" },
+                { key: "纹身", label: "纹身", path: "墨墨.身体改造.纹身" },
+                { key: "特殊改造", label: "特殊改造", path: "墨墨.身体改造.特殊改造" },
+            ].map((e) => ({ ...e, expandKey: `bodymod:${e.key}`, items: aa(_.get(Wt.value, e.path, {})).map(([e, t]) => ({ name: e, desc: String(t) })) }))),
+            
+            Ba = (0, e.computed)(() => na(_.get(Wt.value, "墨墨.服装状态.上装", {}))),
+            Ca = (0, e.computed)(() => na(_.get(Wt.value, "墨墨.服装状态.下装", {}))),
+            xa = (0, e.computed)(() => na(_.get(Wt.value, "墨墨.服装状态.套装", {}))),
+            Pa = (0, e.computed)(() => na(_.get(Wt.value, "墨墨.服装状态.内衣", {}))),
+            wa = (0, e.computed)(() => na(_.get(Wt.value, "墨墨.服装状态.内裤", {}))),
+            za = (0, e.computed)(() => na(_.get(Wt.value, "墨墨.服装状态.袜子", {}))),
+            $a = (0, e.computed)(() => na(_.get(Wt.value, "墨墨.服装状态.鞋子", {}))),
+            Ma = (0, e.computed)(() => na(_.get(Wt.value, "墨墨.服装状态.饰品", {}))),
+            Ka = (0, e.computed)(() => na(_.get(Wt.value, "墨墨.服装状态.性玩具", {}))),
+            La = (0, e.computed)(() => na(_.get(Wt.value, "墨墨.服装状态.特殊分类", {}))),
+            
+            Fa = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.色情状态.堕落值", 0))),
+            ja = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.色情状态.堕落等级", 0))),
+            Aa = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.色情状态.性欲", 0))),
+            Ia = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.色情状态.暴露值", 0))),
+            Ya = (0, e.computed)(() => `${String(_.get(Wt.value, "墨墨.色情状态.宫内精液", 0))}ml`),
+            Oa = (0, e.computed)(() => `${String(_.get(Wt.value, "墨墨.色情状态.肛门精液", 0))}ml`),
+            Ha = (0, e.computed)(() => `${String(_.get(Wt.value, "墨墨.色情状态.淫水数量", 0))}ml`),
+            Ra = (0, e.computed)(() => aa(_.get(Wt.value, "墨墨.色情状态.外部精液", {})).map(([e, t]) => ({ key: e, value: t ?? 0 }))),
+            Ga = (0, e.computed)(() => `次数: ${String(_.get(Wt.value, "墨墨.身体色情记录.性经验", 0))}`),
+            Ta = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.身体色情记录.高潮次数", 0))),
+            Ua = (0, e.computed)(() => ta(_.get(Wt.value, "墨墨.身体色情记录.阴道处女", !0), !0)),
+            qa = (0, e.computed)(() => ta(_.get(Wt.value, "墨墨.身体色情记录.肛门处女", !0), !0)),
+            Ja = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.身体色情记录.口穴开发度", 0))),
+            Qa = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.身体色情记录.私处开发度", 0))),
+            Wa = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.身体色情记录.肛门开发度", 0))),
+            Xa = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.身体色情记录.乳房开发度", 0))),
+            Za = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.身体色情记录.屁股敏感度", 0))),
+            el = (0, e.computed)(() => aa(_.get(Wt.value, "墨墨.背包.物品", {})).map(([e, t]) => ({ key: e, value: t ?? 0 }))),
+            tl = (0, e.computed)(() => [
+                { key: "上装", label: "上装", path: "墨墨.衣柜.上装" },
+                { key: "下装", label: "下装", path: "墨墨.衣柜.下装" },
+                { key: "套装", label: "套装", path: "墨墨.衣柜.套装" },
+                { key: "内衣", label: "内衣", path: "墨墨.衣柜.内衣" },
+                { key: "内裤", label: "内裤", path: "墨墨.衣柜.内裤" },
+                { key: "袜子", label: "袜子", path: "墨墨.衣柜.袜子" },
+                { key: "鞋子", label: "鞋子", path: "墨墨.衣柜.鞋子" },
+                { key: "饰品", label: "饰品", path: "墨墨.衣柜.饰品" },
+                { key: "性玩具", label: "性玩具", path: "墨墨.衣柜.性玩具" },
+                { key: "特殊分类", label: "特殊分类", path: "墨墨.衣柜.特殊分类" },
+              ].map((e) => ({ ...e, expandKey: `wardrobe:${e.key}`, items: aa(_.get(Wt.value, e.path, {})).map(([e, t]) => ({ name: e, desc: String(t).split("(基础")[0].trim() })) }))),
+            asl = (0, e.computed)(() => [
+                { key: "载具", label: "载具", path: "墨墨.资产.载具" },
+                { key: "房产", label: "房产", path: "墨墨.资产.房产" },
+            ].map((e) => ({ ...e, expandKey: `assets:${e.key}`, items: aa(_.get(Wt.value, e.path, {})).map(([e, t]) => ({ name: e, desc: String(t) })) }))),
+            al = (0, e.computed)(() => aa(_.get(Wt.value, "墨墨.任务经验", {})).map(([e, t]) => ({ key: e, shortKey: e.replace("任务经验", ""), value: t ?? 0 }))),
+            ll = (0, e.computed)(() => [
+              { key: "同学评价", value: String(_.get(Wt.value, "墨墨.外部评价.同学评价", "暂无")) },
+              { key: "老师评价", value: String(_.get(Wt.value, "墨墨.外部评价.老师评价", "暂无")) },
+              { key: "暗网评价", value: String(_.get(Wt.value, "墨墨.外部评价.暗网评价", "暂无")) },
+              { key: "互联网评价", value: String(_.get(Wt.value, "墨墨.外部评价.互联网评价", "暂无")) },
+            ]),
+            nl = (0, e.computed)(() => aa(_.get(Wt.value, "墨墨.备忘录", {})).map(([e, t]) => ({ key: e, value: String(t) }))),
+            rl = (0, e.computed)(() => {
+              const e = _.get(Wt.value, "任务", {});
+              return Object.entries(e).filter(([e]) => "$meta" !== e && "template" !== e).map(([e, t]) => {
+                const a = t ?? {}, l = String(a.任务状态 ?? "未知"),
+                  n = [{ key: "类型", value: a.任务类型 }, { key: "地点", value: a.任务地点 }, { key: "目标", value: a.基础任务目标 }, { key: "报酬", value: ca(a.任务基础报酬) }].filter(i => i.value && i.value !== "无");
+                return { name: e, status: l, statusClass: { 已接受: "in-progress", 进行中: "in-progress", 已完成: "completed", 已失败: "failed" }[l] || "", fields: n, evidences: aa(a.当前任务已保存证据 ?? {}).map(([e, t]) => ({ key: e, value: String(t) })), expandKey: `task:${e}` };
+              });
+            });
+          
+          const sl = (0, e.computed)(() => oa(_.get(Wt.value, "墨墨.称号.经济学教授的玩物", -1), "好感: ")),
+            ol = (0, e.computed)(() => oa(_.get(Wt.value, "墨墨.称号.篮球部助理", -1), "进度: ")),
+            cl = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.称号.篮球部成员满意度", 0))),
+            pl = (0, e.computed)(() => ta(_.get(Wt.value, "墨墨.称号.篮球部日常任务", !1))),
+            il = (0, e.computed)(() => oa(_.get(Wt.value, "墨墨.称号.游泳部助理", -1), "进度: ")),
+            ml = (0, e.computed)(() => String(_.get(Wt.value, "墨墨.称号.游泳社成员满意度", 0))),
+            dl = (0, e.computed)(() => ta(_.get(Wt.value, "墨墨.称号.游泳社日常任务", !1))),
+            tSur = (0, e.computed)(() => oa(_.get(Wt.value, "墨墨.称号.遗主者", -1), "进度: ")),
+            tSurM = (0, e.computed)(() => ta(_.get(Wt.value, "墨墨.称号.遗主者任务", !1))),
+            tSco = (0, e.computed)(() => oa(_.get(Wt.value, "墨墨.称号.天灾", -1), "进度: "));
+
+          return (Ut, qt) => (
+            (0, e.openBlock)(), (0, e.createElementBlock)("div", t, [
+              (0, e.createElementVNode)("div", a, [
+                (0, e.createElementVNode)("button", { type: "button", class: (0, e.normalizeClass)(["tab-button", { active: "Page1" === (0, e.unref)(Jt) }]), onClick: (e) => Qt("Page1") }, " 状态总览 "),
+                (0, e.createElementVNode)("button", { type: "button", class: (0, e.normalizeClass)(["tab-button", { active: "Page2" === (0, e.unref)(Jt) }]), onClick: (e) => Qt("Page2") }, " 情欲记录 "),
+                (0, e.createElementVNode)("button", { type: "button", class: (0, e.normalizeClass)(["tab-button", { active: "Page3" === (0, e.unref)(Jt) }]), onClick: (e) => Qt("Page3") }, " 个人物品 "),
+                (0, e.createElementVNode)("button", { type: "button", class: (0, e.normalizeClass)(["tab-button", { active: "Page4" === (0, e.unref)(Jt) }]), onClick: (e) => Qt("Page4") }, " 外部讯息 "),
+              ]),
+              (0, e.createElementVNode)("div", l, [
+                (0, e.createElementVNode)("div", { class: "tab-content", style: (0, e.normalizeStyle)({ display: "Page1" === (0, e.unref)(Jt) ? "block" : "none" }) }, [
+                  (0, e.createElementVNode)("div", n, [
+                    (0, e.createElementVNode)("h3", { class: "section-header" }, "世界状态"),
+                    (0, e.createElementVNode)("div", r, [
+                      (0, e.createElementVNode)("div", s, [(0, e.createElementVNode)("span", { class: "property-name" }, "当前地点:"), (0, e.createElementVNode)("span", o, (0, e.toDisplayString)((0, e.unref)(ia)))]),
+                      (0, e.createElementVNode)("div", c, [(0, e.createElementVNode)("span", { class: "property-name" }, "当前日期:"), (0, e.createElementVNode)("span", p, (0, e.toDisplayString)((0, e.unref)(da)))]),
+                      (0, e.createElementVNode)("div", i, [(0, e.createElementVNode)("span", { class: "property-name" }, "当前时间:"), (0, e.createElementVNode)("span", m, (0, e.toDisplayString)((0, e.unref)(ua)))]),
+                      (0, e.createElementVNode)("div", d, [(0, e.createElementVNode)("span", { class: "property-name" }, "星期:"), (0, e.createElementVNode)("span", u, (0, e.toDisplayString)((0, e.unref)(ya)))]),
+                      (0, e.createElementVNode)("div", y, [(0, e.createElementVNode)("span", { class: "property-name" }, "当前天气:"), (0, e.createElementVNode)("span", v, (0, e.toDisplayString)((0, e.unref)(ma)))]),
+                    ]),
+                  ]),
+                  (0, e.createElementVNode)("div", E, [
+                    (0, e.createElementVNode)("h3", { class: "section-header" }, "墨墨 - 核心状态"),
+                    (0, e.createElementVNode)("div", g, [
+                      (0, e.createElementVNode)("div", N, [(0, e.createElementVNode)("span", { class: "property-name" }, "金钱:"), (0, e.createElementVNode)("span", V, (0, e.toDisplayString)((0, e.unref)(va)))]),
+                      (0, e.createElementVNode)("div", f, [(0, e.createElementVNode)("span", { class: "property-name" }, "学分:"), (0, e.createElementVNode)("span", k, (0, e.toDisplayString)((0, e.unref)(Ea)))]),
+                      (0, e.createElementVNode)("div", S, [(0, e.createElementVNode)("span", { class: "property-name" }, "身份暴露度:"), (0, e.createElementVNode)("span", b, (0, e.toDisplayString)((0, e.unref)(ga)))]),
+                      (0, e.createElementVNode)("div", D, [(0, e.createElementVNode)("span", { class: "property-name" }, "身处状态:"), (0, e.createElementVNode)("span", h, (0, e.toDisplayString)((0, e.unref)(Na)))]),
+                      (0, e.createElementVNode)("div", B, [(0, e.createElementVNode)("span", { class: "property-name" }, "发布者满意度:"), (0, e.createElementVNode)("span", C, (0, e.toDisplayString)((0, e.unref)(Va)))]),
+                      (0, e.createElementVNode)("div", x, [(0, e.createElementVNode)("span", { class: "property-name" }, "任务倒计时:"), (0, e.createElementVNode)("span", P, (0, e.toDisplayString)((0, e.unref)(fa)))]),
+                    ]),
+                  ]),
+                  (0, e.createElementVNode)("div", L, [
+                    (0, e.createElementVNode)("h3", { class: "section-header" }, "墨墨 - 外观数据"),
+                    (0, e.createElementVNode)("div", F, [
+                      (0, e.createElementVNode)("div", j, [(0, e.createElementVNode)("span", { class: "property-name" }, "发型/色:"), (0, e.createElementVNode)("span", A, (0, e.toDisplayString)((0, e.unref)(ba)) + "/" + (0, e.toDisplayString)((0, e.unref)(hc)))]),
+                      (0, e.createElementVNode)("div", N_EB, [(0, e.createElementVNode)("span", { class: "property-name" }, "眉形:"), (0, e.createElementVNode)("span", V_EB, (0, e.toDisplayString)((0, e.unref)(eb)))]),
+                      (0, e.createElementVNode)("div", N_EC, [(0, e.createElementVNode)("span", { class: "property-name" }, "瞳色/眼型:"), (0, e.createElementVNode)("span", V_EC, (0, e.toDisplayString)((0, e.unref)(ec)) + "/" + (0, e.toDisplayString)((0, e.unref)(es)))]),
+                      (0, e.createElementVNode)("div", N_FS, [(0, e.createElementVNode)("span", { class: "property-name" }, "脸型:"), (0, e.createElementVNode)("span", V_FS, (0, e.toDisplayString)((0, e.unref)(fs)))]),
+                      (0, e.createElementVNode)("div", N_NS, [(0, e.createElementVNode)("span", { class: "property-name" }, "鼻型:"), (0, e.createElementVNode)("span", V_NS, (0, e.toDisplayString)((0, e.unref)(ns)))]),
+                      (0, e.createElementVNode)("div", N_LS, [(0, e.createElementVNode)("span", { class: "property-name" }, "唇形:"), (0, e.createElementVNode)("span", V_LS, (0, e.toDisplayString)((0, e.unref)(ls)))]),
+                      (0, e.createElementVNode)("div", I, [(0, e.createElementVNode)("span", { class: "property-name" }, "胸围:"), (0, e.createElementVNode)("span", Y, (0, e.toDisplayString)((0, e.unref)(Da)))]),
+                      (0, e.createElementVNode)("div", O, [(0, e.createElementVNode)("span", { class: "property-name" }, "腰围:"), (0, e.createElementVNode)("span", H, (0, e.toDisplayString)((0, e.unref)(ha)) + "cm")]),
+                      (0, e.createElementVNode)("div", R, [(0, e.createElementVNode)("span", { class: "property-name" }, "臀围:"), (0, e.createElementVNode)("span", G, (0, e.toDisplayString)((0, e.unref)(_a)) + "cm")]),
+                      (0, e.createElementVNode)("div", N_SC, [(0, e.createElementVNode)("span", { class: "property-name" }, "肤色:"), (0, e.createElementVNode)("span", V_SC, (0, e.toDisplayString)((0, e.unref)(sc)))]),
+                    ]),
+                  ]),
+                  (0, e.createElementVNode)("div", BM_S, [
+                    (0, e.createElementVNode)("h3", { class: "section-header collapsible", onClick: (e) => ea("bodyMods") }, [
+                      (0, e.createElementVNode)("span", null, "墨墨 - 身体改造"),
+                      (0, e.createElementVNode)("span", { class: "collapsible-arrow", style: (0, e.normalizeStyle)({ transform: Zt("bodyMods") ? "rotate(90deg)" : "rotate(0deg)" }) }, "▶")
+                    ]),
+                    (0, e.createElementVNode)("div", { class: (0, e.normalizeClass)(["collapsible-content no-border", { expanded: Zt("bodyMods") }]) }, [
+                      ((0, e.openBlock)(!0), (0, e.createElementBlock)(e.Fragment, null, (0, e.renderList)((0, e.unref)(bml), (t) => (
+                        (0, e.openBlock)(), (0, e.createElementBlock)("div", { key: t.key }, [
+                          (0, e.createElementVNode)("div", { class: "collapsible-header wardrobe-item", onClick: (e) => ea(t.expandKey) }, [
+                            (0, e.createElementVNode)("span", { class: "property-name" }, (0, e.toDisplayString)(t.label) + " (" + (0, e.toDisplayString)(t.items.length) + ")"),
+                            (0, e.createElementVNode)("span", { class: "collapsible-arrow", style: (0, e.normalizeStyle)({ transform: Zt(t.expandKey) ? "rotate(90deg)" : "rotate(0deg)" }) }, "▶")
+                          ]),
+                          (0, e.createElementVNode)("div", { class: (0, e.normalizeClass)(["collapsible-content", { expanded: Zt(t.expandKey) }]) }, [
+                            0 === t.items.length ? ((0, e.openBlock)(), (0, e.createElementBlock)("div", ot, [(0, e.createElementVNode)("span", { class: "item-desc" }, "无")])) : ((0, e.openBlock)(), (0, e.createElementBlock)("div", ct, [
+                              ((0, e.openBlock)(!0), (0, e.createElementBlock)(e.Fragment, null, (0, e.renderList)(t.items, (t) => (
+                                (0, e.openBlock)(), (0, e.createElementBlock)("div", { key: t.name, class: "list-item" }, [
+                                  (0, e.createElementVNode)("span", pt, (0, e.toDisplayString)(t.name)),
+                                  (0, e.createElementVNode)("span", it, (0, e.toDisplayString)(t.desc))
+                                ])
+                              )), 128))
+                            ]))
+                          ], 2)
+                        ])
+                      )), 128))
+                    ], 2)
+                  ]),
+                  (0, e.createElementVNode)("div", T, [
+                    (0, e.createElementVNode)("h3", { class: "section-header collapsible", onClick: (e) => ea("outfit") }, [(0, e.createElementVNode)("span", null, "墨墨 - 当前着装"), (0, e.createElementVNode)("span", { class: "collapsible-arrow", style: (0, e.normalizeStyle)({ transform: Zt("outfit") ? "rotate(90deg)" : "rotate(0deg)" }) }, "▶")]),
+                    (0, e.createElementVNode)("div", { class: (0, e.normalizeClass)(["collapsible-content no-border", { expanded: Zt("outfit") }]) }, [
+                      (0, e.createElementVNode)("div", U, [
+                        (0, e.createElementVNode)("div", q, [(0, e.createElementVNode)("span", { class: "property-name" }, "上/下装:"), (0, e.createElementVNode)("span", J, (0, e.toDisplayString)((0, e.unref)(Ba)) + " / " + (0, e.toDisplayString)((0, e.unref)(Ca)))]),
+                        (0, e.createElementVNode)("div", X, [(0, e.createElementVNode)("span", { class: "property-name" }, "套装:"), (0, e.createElementVNode)("span", Z, (0, e.toDisplayString)((0, e.unref)(xa)))]),
+                        (0, e.createElementVNode)("div", ee, [(0, e.createElementVNode)("span", { class: "property-name" }, "内衣/裤:"), (0, e.createElementVNode)("span", te, (0, e.toDisplayString)((0, e.unref)(Pa)) + " / " + (0, e.toDisplayString)((0, e.unref)(wa)))]),
+                        (0, e.createElementVNode)("div", ne, [(0, e.createElementVNode)("span", { class: "property-name" }, "袜/鞋:"), (0, e.createElementVNode)("span", re, (0, e.toDisplayString)((0, e.unref)(za)) + " / " + (0, e.toDisplayString)((0, e.unref)($a)))]),
+                        (0, e.createElementVNode)("div", ce, [(0, e.createElementVNode)("span", { class: "property-name" }, "饰品:"), (0, e.createElementVNode)("span", pe, (0, e.toDisplayString)((0, e.unref)(Ma)))]),
+                        (0, e.createElementVNode)("div", ie, [(0, e.createElementVNode)("span", { class: "property-name" }, "性玩具:"), (0, e.createElementVNode)("span", me, (0, e.toDisplayString)((0, e.unref)(Ka)))]),
+                      ]),
+                    ], 2),
+                  ]),
+                ]),
+                (0, e.createElementVNode)("div", { class: "tab-content", style: (0, e.normalizeStyle)({ display: "Page2" === (0, e.unref)(Jt) ? "block" : "none" }) }, [
+                  (0, e.createElementVNode)("div", ye, [
+                    (0, e.createElementVNode)("h3", { class: "section-header" }, "墨墨 - 色情状态"),
+                    (0, e.createElementVNode)("div", ve, [
+                      (0, e.createElementVNode)("div", Ee, [(0, e.createElementVNode)("span", { class: "property-name" }, "堕落等级:"), (0, e.createElementVNode)("span", ge, (0, e.toDisplayString)((0, e.unref)(ja)))]),
+                      (0, e.createElementVNode)("div", fe, [(0, e.createElementVNode)("span", { class: "property-name" }, "性欲:"), (0, e.createElementVNode)("span", ke, (0, e.toDisplayString)((0, e.unref)(Aa)))]),
+                      (0, e.createElementVNode)("div", Se, [(0, e.createElementVNode)("span", { class: "property-name" }, "暴露值:"), (0, e.createElementVNode)("span", be, (0, e.toDisplayString)((0, e.unref)(Ia)))]),
+                      (0, e.createElementVNode)("div", De, [(0, e.createElementVNode)("span", { class: "property-name" }, "宫内/肛门精液:"), (0, e.createElementVNode)("span", he, (0, e.toDisplayString)((0, e.unref)(Ya)) + " / " + (0, e.toDisplayString)((0, e.unref)(Oa)))]),
+                      (0, e.createElementVNode)("div", Ce, [(0, e.createElementVNode)("span", { class: "property-name" }, "淫水数量:"), (0, e.createElementVNode)("span", xe, (0, e.toDisplayString)((0, e.unref)(Ha)))]),
+                    ]),
+                  ]),
+                  (0, e.createElementVNode)("div", Ke, [
+                    (0, e.createElementVNode)("h3", { class: "section-header" }, "墨墨 - 身体开发记录"),
+                    (0, e.createElementVNode)("div", Le, [
+                      (0, e.createElementVNode)("div", Fe, [(0, e.createElementVNode)("span", { class: "property-name" }, "性经验:"), (0, e.createElementVNode)("span", je, (0, e.toDisplayString)((0, e.unref)(Ga)))]),
+                      (0, e.createElementVNode)("div", Ae, [(0, e.createElementVNode)("span", { class: "property-name" }, "高潮次数:"), (0, e.createElementVNode)("span", Ie, (0, e.toDisplayString)((0, e.unref)(Ta)))]),
+                      (0, e.createElementVNode)("div", Ye, [(0, e.createElementVNode)("span", { class: "property-name" }, "阴道处女:"), (0, e.createElementVNode)("span", { class: (0, e.normalizeClass)(["value-main boolean-value", sa((0, e.unref)(Ua))]) }, (0, e.unref)(Ua) ? "是" : "否")]),
+                      (0, e.createElementVNode)("div", Oe, [(0, e.createElementVNode)("span", { class: "property-name" }, "肛门处女:"), (0, e.createElementVNode)("span", { class: (0, e.normalizeClass)(["value-main boolean-value", sa((0, e.unref)(qa))]) }, (0, e.unref)(qa) ? "是" : "否")]),
+                      (0, e.createElementVNode)("div", He, [(0, e.createElementVNode)("span", { class: "property-name" }, "口穴开发:"), (0, e.createElementVNode)("span", Re, (0, e.toDisplayString)((0, e.unref)(Ja)))]),
+                      (0, e.createElementVNode)("div", Ge, [(0, e.createElementVNode)("span", { class: "property-name" }, "私处开发:"), (0, e.createElementVNode)("span", Te, (0, e.toDisplayString)((0, e.unref)(Qa)))]),
+                      (0, e.createElementVNode)("div", Ue, [(0, e.createElementVNode)("span", { class: "property-name" }, "肛门开发:"), (0, e.createElementVNode)("span", qe, (0, e.toDisplayString)((0, e.unref)(Wa)))]),
+                      (0, e.createElementVNode)("div", Je, [(0, e.createElementVNode)("span", { class: "property-name" }, "乳房开发:"), (0, e.createElementVNode)("span", Qe, (0, e.toDisplayString)((0, e.unref)(Xa)))]),
+                      (0, e.createElementVNode)("div", We, [(0, e.createElementVNode)("span", { class: "property-name" }, "屁股敏感:"), (0, e.createElementVNode)("span", Xe, (0, e.toDisplayString)((0, e.unref)(Za)))]),
+                    ]),
+                  ]),
+                ]),
+                (0, e.createElementVNode)("div", { class: "tab-content", style: (0, e.normalizeStyle)({ display: "Page3" === (0, e.unref)(Jt) ? "block" : "none" }) }, [
+                  (0, e.createElementVNode)("div", Ze, [
+                    (0, e.createElementVNode)("h3", { class: "section-header" }, "背包"),
+                    (0, e.createElementVNode)("div", et, [
+                      0 === (0, e.unref)(el).length ? ((0, e.openBlock)(), (0, e.createElementBlock)("div", tt, [(0, e.createElementVNode)("span", { class: "property-name" }, "空")])) : (0, e.createCommentVNode)("v-if", !0),
+                      ((0, e.openBlock)(!0), (0, e.createElementBlock)(e.Fragment, null, (0, e.renderList)((0, e.unref)(el), (t) => ((0, e.openBlock)(), (0, e.createElementBlock)("div", { key: t.key, class: "property" }, [(0, e.createElementVNode)("span", at, (0, e.toDisplayString)(t.key)), (0, e.createElementVNode)("span", lt, "x " + (0, e.toDisplayString)(t.value))]))), 128)),
+                    ]),
+                  ]),
+                  (0, e.createElementVNode)("div", nt, [
+                    (0, e.createElementVNode)("h3", { class: "section-header" }, "衣柜"),
+                    ((0, e.openBlock)(!0), (0, e.createElementBlock)(e.Fragment, null, (0, e.renderList)((0, e.unref)(tl), (t) => ((0, e.openBlock)(), (0, e.createElementBlock)("div", { key: t.key }, [
+                      (0, e.createElementVNode)("div", { class: "collapsible-header wardrobe-item", onClick: (e) => ea(t.expandKey) }, [(0, e.createElementVNode)("span", st, (0, e.toDisplayString)(t.label) + " (" + (0, e.toDisplayString)(t.items.length) + ")"), (0, e.createElementVNode)("span", { class: "collapsible-arrow", style: (0, e.normalizeStyle)({ transform: Zt(t.expandKey) ? "rotate(90deg)" : "rotate(0deg)" }) }, "▶")]),
+                      (0, e.createElementVNode)("div", { class: (0, e.normalizeClass)(["collapsible-content", { expanded: Zt(t.expandKey) }]) }, [
+                        0 === t.items.length ? ((0, e.openBlock)(), (0, e.createElementBlock)("div", ot, [(0, e.createElementVNode)("span", { class: "item-desc" }, "空")])) : ((0, e.openBlock)(), (0, e.createElementBlock)("div", ct, [((0, e.openBlock)(!0), (0, e.createElementBlock)(e.Fragment, null, (0, e.renderList)(t.items, (t) => ((0, e.openBlock)(), (0, e.createElementBlock)("div", { key: t.name, class: "list-item" }, [(0, e.createElementVNode)("span", pt, (0, e.toDisplayString)(t.name)), (0, e.createElementVNode)("span", it, (0, e.toDisplayString)(t.desc))]))), 128))])),
+                      ], 2),
+                    ]))), 128)),
+                  ]),
+                  (0, e.createElementVNode)("div", AS_S, [
+                    (0, e.createElementVNode)("h3", { class: "section-header" }, "资产"),
+                    ((0, e.openBlock)(!0), (0, e.createElementBlock)(e.Fragment, null, (0, e.renderList)((0, e.unref)(asl), (t) => ((0, e.openBlock)(), (0, e.createElementBlock)("div", { key: t.key }, [
+                      (0, e.createElementVNode)("div", { class: "collapsible-header wardrobe-item", onClick: (e) => ea(t.expandKey) }, [(0, e.createElementVNode)("span", st, (0, e.toDisplayString)(t.label) + " (" + (0, e.toDisplayString)(t.items.length) + ")"), (0, e.createElementVNode)("span", { class: "collapsible-arrow", style: (0, e.normalizeStyle)({ transform: Zt(t.expandKey) ? "rotate(90deg)" : "rotate(0deg)" }) }, "▶")]),
+                      (0, e.createElementVNode)("div", { class: (0, e.normalizeClass)(["collapsible-content", { expanded: Zt(t.expandKey) }]) }, [
+                        0 === t.items.length ? ((0, e.openBlock)(), (0, e.createElementBlock)("div", ot, [(0, e.createElementVNode)("span", { class: "item-desc" }, "无")])) : ((0, e.openBlock)(), (0, e.createElementBlock)("div", ct, [((0, e.openBlock)(!0), (0, e.createElementBlock)(e.Fragment, null, (0, e.renderList)(t.items, (t) => ((0, e.openBlock)(), (0, e.createElementBlock)("div", { key: t.name, class: "list-item" }, [(0, e.createElementVNode)("span", pt, (0, e.toDisplayString)(t.name)), (0, e.createElementVNode)("span", it, (0, e.toDisplayString)(t.desc))]))), 128))])),
+                      ], 2),
+                    ]))), 128)),
+                  ]),
+                ]),
+                (0, e.createElementVNode)("div", { class: "tab-content", style: (0, e.normalizeStyle)({ display: "Page4" === (0, e.unref)(Jt) ? "block" : "none" }) }, [
+                  (0, e.createElementVNode)("div", mt, [
+                    (0, e.createElementVNode)("h3", { class: "section-header" }, "备忘录"),
+                    (0, e.createElementVNode)("div", dt, [
+                      0 === (0, e.unref)(nl).length ? ((0, e.openBlock)(), (0, e.createElementBlock)("div", ut, [(0, e.createElementVNode)("span", { class: "property-name" }, "无")])) : (0, e.createCommentVNode)("v-if", !0),
+                      ((0, e.openBlock)(!0), (0, e.createElementBlock)(e.Fragment, null, (0, e.renderList)((0, e.unref)(nl), (t) => ((0, e.openBlock)(), (0, e.createElementBlock)("div", { key: t.key, class: "property" }, [(0, e.createElementVNode)("span", yt, (0, e.toDisplayString)(t.key) + ":"), (0, e.createElementVNode)("span", vt, (0, e.toDisplayString)(t.value))]))), 128)),
+                    ]),
+                  ]),
+                  (0, e.createElementVNode)("div", Et, [
+                    (0, e.createElementVNode)("h3", { class: "section-header" }, "任务信息"),
+                    0 === (0, e.unref)(rl).length ? ((0, e.openBlock)(), (0, e.createElementBlock)("div", gt, [(0, e.createElementVNode)("span", { class: "property-name" }, "无进行中任务")])) : (0, e.createCommentVNode)("v-if", !0),
+                    ((0, e.openBlock)(!0), (0, e.createElementBlock)(e.Fragment, null, (0, e.renderList)((0, e.unref)(rl), (t) => ((0, e.openBlock)(), (0, e.createElementBlock)("div", { key: t.name, class: "section", style: { "margin-bottom": "15px" } }, [
+                      (0, e.createElementVNode)("div", { class: "collapsible-header wardrobe-item", onClick: (e) => ea(t.expandKey) }, [(0, e.createElementVNode)("span", Vt, (0, e.toDisplayString)(t.name)), (0, e.createElementVNode)("div", ft, [(0, e.createElementVNode)("span", { class: (0, e.normalizeClass)(["task-status", t.statusClass]) }, (0, e.toDisplayString)(t.status)), (0, e.createElementVNode)("span", { class: "collapsible-arrow", style: (0, e.normalizeStyle)({ transform: Zt(t.expandKey) ? "rotate(90deg)" : "rotate(0deg)" }) }, "▶")])]),
+                      (0, e.createElementVNode)("div", { class: (0, e.normalizeClass)(["collapsible-content", { expanded: Zt(t.expandKey) }]) }, [
+                        (0, e.createElementVNode)("div", kt, [
+                          ((0, e.openBlock)(!0), (0, e.createElementBlock)(e.Fragment, null, (0, e.renderList)(t.fields, (t) => ((0, e.openBlock)(), (0, e.createElementBlock)("div", { key: t.key, class: "property" }, [(0, e.createElementVNode)("span", St, (0, e.toDisplayString)(t.key) + ":"), (0, e.createElementVNode)("span", bt, (0, e.toDisplayString)(t.value))]))), 128)),
+                        ]),
+                      ], 2),
+                    ]))), 128)),
+                  ]),
+                  (0, e.createElementVNode)("div", zt, [
+                    (0, e.createElementVNode)("h3", { class: "section-header collapsible", onClick: (e) => ea("titles") }, [(0, e.createElementVNode)("span", null, "持有称号与任务"), (0, e.createElementVNode)("span", { class: "collapsible-arrow", style: (0, e.normalizeStyle)({ transform: Zt("titles") ? "rotate(90deg)" : "rotate(0deg)" }) }, "▶")]),
+                    (0, e.createElementVNode)("div", { class: (0, e.normalizeClass)(["collapsible-content no-border", { expanded: Zt("titles") }]) }, [
+                      (0, e.createElementVNode)("div", $t, [
+                        (0, e.createElementVNode)("div", N_T1, [(0, e.createElementVNode)("span", { class: "property-name" }, "遗主者:"), (0, e.createElementVNode)("span", { class: (0, e.normalizeClass)(["value-main", (0, e.unref)(tSur).className]) }, (0, e.toDisplayString)((0, e.unref)(tSur).text))]),
+                        (0, e.createElementVNode)("div", N_T2, [(0, e.createElementVNode)("span", { class: "property-name" }, "遗主者任务:"), (0, e.createElementVNode)("span", { class: (0, e.normalizeClass)(["value-main boolean-value", sa((0, e.unref)(tSurM))]) }, (0, e.unref)(tSurM) ? "已开启" : "未开启")]),
+                        (0, e.createElementVNode)("div", N_T3, [(0, e.createElementVNode)("span", { class: "property-name" }, "天灾:"), (0, e.createElementVNode)("span", { class: (0, e.normalizeClass)(["value-main", (0, e.unref)(tSco).className]) }, (0, e.toDisplayString)((0, e.unref)(tSco).text))]),
+                        (0, e.createElementVNode)("div", Kt, [(0, e.createElementVNode)("span", { class: "property-name" }, "篮球部助理:"), (0, e.createElementVNode)("span", { class: (0, e.normalizeClass)(["value-main", (0, e.unref)(ol).className]) }, (0, e.toDisplayString)((0, e.unref)(ol).text))]),
+                        (0, e.createElementVNode)("div", At, [(0, e.createElementVNode)("span", { class: "property-name" }, "游泳部助理:"), (0, e.createElementVNode)("span", { class: (0, e.normalizeClass)(["value-main", (0, e.unref)(il).className]) }, (0, e.toDisplayString)((0, e.unref)(il).text))]),
+                      ]),
+                    ], 2),
+                  ]),
+                  (0, e.createElementVNode)("div", Ht, [
+                    (0, e.createElementVNode)("h3", { class: "section-header" }, "外部评价"),
+                    (0, e.createElementVNode)("div", Rt, [
+                      ((0, e.openBlock)(!0), (0, e.createElementBlock)(e.Fragment, null, (0, e.renderList)((0, e.unref)(ll), (t) => ((0, e.openBlock)(), (0, e.createElementBlock)("div", { key: t.key, class: "evaluation-item" }, [(0, e.createElementVNode)("div", Gt, (0, e.toDisplayString)(t.key)), (0, e.createElementVNode)("div", Tt, (0, e.toDisplayString)(t.value))]))), 128)),
+                    ]),
+                  ]),
+                ]),
+              ]),
+            ])
+          );
+        },
+      });
+    $(async () => { await waitGlobalInitialized("Mvu"), (0, e.createApp)(qt).mount("#app"); });
+  </script>
+  <style>
+    @import url(https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap);
+    :root { --bg-color: transparent; --card-bg-color: rgba(255, 248, 250, 0.95); --border-color: rgba(255, 192, 203, 0.5); --text-primary-color: #8b576e; --text-secondary-color: #b48a9d; --accent-color: #f472b6; --accent-soft: rgba(244, 114, 182, 0.15); --tab-bg-color: rgba(255, 240, 244, 0.9); --item-bg-color: rgba(255, 255, 255, 0.65); --item-border-color: rgba(255, 192, 203, 0.4); --item-hover-bg-color: rgba(244, 114, 182, 0.1); --boolean-true-color: #6ee7b7; --boolean-false-color: #f78b8b; --locked-color: #d1d5db; --warning-color: #ef4444; }
+    body { font-family: "Noto Sans SC", sans-serif; background-color: var(--bg-color); color: var(--text-primary-color); margin: 0; padding: 0; width: 100%; -webkit-font-smoothing: antialiased; }
+    .status-card { width: 100%; height: 100%; background-color: var(--card-bg-color); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font-size: 14px; display: flex; flex-direction: column; }
+    .tabs { display: flex; background-color: var(--tab-bg-color); border-bottom: 1px solid var(--border-color); }
+    .tab-button { flex-grow: 1; padding: 12px 10px; cursor: pointer; border: none; background-color: transparent; color: var(--text-secondary-color); font-weight: 500; transition: all 0.3s; position: relative; }
+    .tab-button.active { color: var(--text-primary-color); font-weight: 700; }
+    .tab-button.active:after { content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 60%; height: 2px; background-color: var(--accent-color); }
+    .tab-container { flex-grow: 1; overflow-y: auto; padding: 18px; }
+    .section { margin-bottom: 20px; }
+    .section-header { font-weight: 700; color: var(--accent-color); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); }
+    .section-header.collapsible { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .property-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+    .property { background-color: var(--item-bg-color); border-radius: 8px; padding: 10px 12px; border: 1px solid var(--item-border-color); display: flex; justify-content: space-between; align-items: center; gap: 10px; transition: 0.3s; }
+    .property:hover { transform: translateY(-2px); background-color: var(--item-hover-bg-color); }
+    .property-name { color: var(--text-secondary-color); font-size: 0.9em; flex-shrink: 0; }
+    .value-main { font-weight: 500; text-align: right; word-break: break-all; }
+    .boolean-value.is-true { color: var(--boolean-true-color); font-weight: 700; }
+    .boolean-value.is-false { color: var(--boolean-false-color); font-weight: 700; }
+    .locked-value { color: var(--locked-color); font-style: italic; }
+    .collapsible-header { cursor: pointer; padding: 10px 12px; border-radius: 6px; margin-bottom: 2px; display: flex; justify-content: space-between; align-items: center; background-color: var(--item-bg-color); }
+    .collapsible-arrow { transition: transform 0.3s; color: var(--accent-color); }
+    .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; padding-left: 10px; border-left: 2px solid var(--accent-soft); }
+    .collapsible-content.expanded { max-height: 1000px; }
+    .collapsible-content.no-border { padding-left: 0; border-left: none; }
+    .list-item { display: flex; justify-content: space-between; padding: 8px 6px; border-bottom: 1px solid var(--border-color); }
+    .item-desc { font-size: 0.85em; color: var(--text-secondary-color); text-align: right; }
+    .evaluation-item { background-color: var(--item-bg-color); border-radius: 8px; padding: 12px; margin-bottom: 10px; border: 1px solid var(--item-border-color); }
+    .evaluation-title { color: var(--text-secondary-color); font-weight: 500; font-size: 0.9em; margin-bottom: 4px; }
+    .task-status.in-progress { color: #60a5fa; }
+    .task-status.completed { color: #6ee7b7; }
+  </style>
+</head>
+<body><div id="app"></div></body>
+--- END OF FILE ---
