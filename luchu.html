@@ -1,0 +1,200 @@
+--- START OF FILE text/html ---
+<head>
+  <script type="module">
+    const e = Vue;
+    const qt = (0, e.defineComponent)({
+      __name: "app",
+      setup() {
+        const activeTab = (0, e.ref)("Page1");
+        const statData = (0, e.ref)({});
+        const uiState = (0, e.reactive)({ exp: true, outfit: true, wardrobe: {}, titles: true, assets: true });
+        
+        const toggle = (k) => { uiState[k] = !uiState[k]; };
+        const getVal = (path, def = "无") => _.get(statData.value, path, def);
+        const formatMoney = (v) => `￥ ${v ?? 0}`;
+        
+        const refreshData = async () => {
+          try {
+            const msgs = await getChatMessages(getCurrentMessageId());
+            statData.value = msgs?.[0]?.data?.stat_data || {};
+          } catch (err) { console.error(err); }
+        };
+
+        (0, e.onMounted)(() => {
+          refreshData();
+          if (typeof Mvu !== "undefined") eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, refreshData);
+        });
+
+        // 格式化逻辑
+        const worldDate = (0, e.computed)(() => {
+          const d = getVal("世界.日期");
+          return typeof d === "object" ? `${d.年||"?"}年${d.月||"?"}月${d.日}日` : `第 ${d} 天`;
+        });
+        
+        const appearanceInfo = (0, e.computed)(() => {
+          const a = getVal("墨墨.外观数据", {});
+          return [
+            { n: "身高", v: a.身高 + "cm" }, { n: "罩杯", v: a.罩杯 }, 
+            { n: "胸围差", v: a.胸围差 }, { n: "腰围", v: a.腰围 }, 
+            { n: "臀围", v: a.臀围 }, { n: "肤色", v: a.肤色 }
+          ];
+        });
+
+        const titleList = (0, e.computed)(() => {
+          const t = getVal("墨墨.称号", {});
+          return Object.entries(t).map(([k, v]) => {
+            if (v === -1 || v === false) return { k, v: "未开启", c: "locked-value" };
+            if (v === true) return { k, v: "已激活", c: "is-true" };
+            return { k, v: String(v) };
+          });
+        });
+
+        const wardrobeCategories = ["上装", "下装", "套装", "内衣", "内裤", "袜子", "鞋子", "饰品", "性玩具", "特殊分类"];
+
+        return (proxy, slot) => {
+          const _ = statData.value;
+          return (0, e.openBlock)(), (0, e.createElementBlock)("div", { class: "status-card" }, [
+            // Tabs
+            (0, e.createElementVNode)("div", { class: "tabs" }, ["状态总览", "情欲记录", "个人物品", "外部讯息"].map((t, i) => (
+              (0, e.createElementVNode)("button", { 
+                class: ["tab-button", { active: activeTab.value === `Page${i+1}` }],
+                onClick: () => activeTab.value = `Page${i+1}`
+              }, t)
+            ))),
+            
+            (0, e.createElementVNode)("div", { class: "tab-container" }, [
+              // Page 1: 核心状态
+              activeTab.value === "Page1" ? (0, e.openBlock)(), (0, e.createElementBlock)("div", { class: "tab-content", style: {display:"block"} }, [
+                (0, e.createElementVNode)("div", { class: "section" }, [
+                  (0, e.createElementVNode)("h3", { class: "section-header" }, "世界 & 核心"),
+                  (0, e.createElementVNode)("div", { class: "property-grid" }, [
+                    {n:"地点", v:getVal("世界.地点")}, {n:"时间", v:`${getVal("世界.时间.小时")}:${getVal("世界.时间.分钟")}`},
+                    {n:"日期", v:worldDate.value}, {n:"天气", v:getVal("世界.天气")},
+                    {n:"金钱", v:formatMoney(getVal("墨墨.常规物品.金钱"))}, {n:"学分", v:getVal("墨墨.常规物品.学分")},
+                    {n:"状态", v:getVal("墨墨.身处状态")}, {n:"暴露度", v:getVal("墨墨.身份暴露度")}
+                  ].map(p => (0, e.createElementVNode)("div", { class: "property" }, [
+                    (0, e.createElementVNode)("span", { class: "property-name" }, p.n),
+                    (0, e.createElementVNode)("span", { class: "value-main" }, p.v)
+                  ])))
+                ]),
+                (0, e.createElementVNode)("div", { class: "section" }, [
+                  (0, e.createElementVNode)("h3", { class: "section-header" }, "外观数据"),
+                  (0, e.createElementVNode)("div", { class: "property-grid" }, appearanceInfo.value.map(p => (
+                    (0, e.createElementVNode)("div", { class: "property" }, [
+                      (0, e.createElementVNode)("span", { class: "property-name" }, p.n),
+                      (0, e.createElementVNode)("span", { class: "value-main" }, p.v)
+                    ])
+                  )))
+                ])
+              ]) : (0, e.createCommentVNode)(""),
+
+              // Page 2: 情欲
+              activeTab.value === "Page2" ? (0, e.openBlock)(), (0, e.createElementBlock)("div", { class: "tab-content", style: {display:"block"} }, [
+                (0, e.createElementVNode)("div", { class: "section" }, [
+                  (0, e.createElementVNode)("h3", { class: "section-header" }, "生理状态"),
+                  (0, e.createElementVNode)("div", { class: "property-grid" }, [
+                    {n:"堕落等级", v:getVal("墨墨.色情状态.堕落等级")}, {n:"性欲", v:getVal("墨墨.色情状态.性欲")},
+                    {n:"性经验", v:getVal("墨墨.身体色情记录.性经验")}, {n:"高潮次数", v:getVal("墨墨.身体色情记录.高潮次数")},
+                    {n:"阴道处女", v:getVal("墨墨.身体色情记录.阴道处女")?"是":"否", b:true},
+                    {n:"肛门处女", v:getVal("墨墨.身体色情记录.肛门处女")?"是":"否", b:true}
+                  ].map(p => (0, e.createElementVNode)("div", { class: "property" }, [
+                    (0, e.createElementVNode)("span", { class: "property-name" }, p.n),
+                    (0, e.createElementVNode)("span", { class: ["value-main", p.b?(p.v==="是"?"is-true":"is-false"):""] }, p.v)
+                  ])))
+                ]),
+                (0, e.createElementVNode)("div", { class: "section" }, [
+                  (0, e.createElementVNode)("h3", { class: "section-header" }, "身体开发"),
+                  (0, e.createElementVNode)("div", { class: "property-grid" }, ["口穴", "私处", "肛门", "乳房"].map(k => (
+                    (0, e.createElementVNode)("div", { class: "property" }, [
+                      (0, e.createElementVNode)("span", { class: "property-name" }, k + "开发"),
+                      (0, e.createElementVNode)("span", { class: "value-main" }, getVal(`墨墨.身体色情记录.${k}开发度`))
+                    ])
+                  )))
+                ])
+              ]) : (0, e.createCommentVNode)(""),
+
+              // Page 3: 物品 & 资产
+              activeTab.value === "Page3" ? (0, e.openBlock)(), (0, e.createElementBlock)("div", { class: "tab-content", style: {display:"block"} }, [
+                (0, e.createElementVNode)("div", { class: "section" }, [
+                  (0, e.createElementVNode)("h3", { class: "section-header" }, "资产 & 房产"),
+                  (0, e.createElementVNode)("div", { class: "property-list" }, Object.entries(getVal("墨墨.资产.房产", {})).map(([k, v]) => (
+                    (0, e.createElementVNode)("div", { class: "property" }, [
+                      (0, e.createElementVNode)("span", { class: "property-name" }, k),
+                      (0, e.createElementVNode)("span", { class: "value-main", style:{"font-size":"0.85em"} }, v)
+                    ])
+                  )))
+                ]),
+                (0, e.createElementVNode)("div", { class: "section" }, [
+                  (0, e.createElementVNode)("h3", { class: "section-header" }, "衣柜总览"),
+                  wardrobeCategories.map(cat => (0, e.createElementVNode)("div", { key: cat }, [
+                    (0, e.createElementVNode)("div", { class: "collapsible-header wardrobe-item", onClick: () => uiState.wardrobe[cat] = !uiState.wardrobe[cat] }, [
+                      (0, e.createElementVNode)("span", null, `${cat} (${Object.keys(getVal(`墨墨.衣柜.${cat}`, {})).length})`),
+                      (0, e.createElementVNode)("span", { class: "collapsible-arrow", style: { transform: uiState.wardrobe[cat] ? "rotate(90deg)" : "rotate(0deg)" } }, "▶")
+                    ]),
+                    uiState.wardrobe[cat] ? (0, e.createElementVNode)("div", { class: "collapsible-content expanded" }, 
+                      Object.entries(getVal(`墨墨.衣柜.${cat}`, {})).map(([name, desc]) => (
+                        (0, e.createElementVNode)("div", { class: "list-item" }, [
+                          (0, e.createElementVNode)("span", { class: "item-name" }, name),
+                          (0, e.createElementVNode)("span", { class: "item-desc" }, String(desc).split("(基础")[0])
+                        ])
+                      ))
+                    ) : (0, e.createCommentVNode)("")
+                  ]))
+                ])
+              ]) : (0, e.createCommentVNode)(""),
+
+              // Page 4: 称号 & 任务
+              activeTab.value === "Page4" ? (0, e.openBlock)(), (0, e.createElementBlock)("div", { class: "tab-content", style: {display:"block"} }, [
+                (0, e.createElementVNode)("div", { class: "section" }, [
+                  (0, e.createElementVNode)("h3", { class: "section-header" }, "持有称号"),
+                  (0, e.createElementVNode)("div", { class: "property-list" }, titleList.value.map(t => (
+                    (0, e.createElementVNode)("div", { class: "property" }, [
+                      (0, e.createElementVNode)("span", { class: "property-name" }, t.k),
+                      (0, e.createElementVNode)("span", { class: ["value-main", t.c] }, t.v)
+                    ])
+                  )))
+                ]),
+                (0, e.createElementVNode)("div", { class: "section" }, [
+                  (0, e.createElementVNode)("h3", { class: "section-header" }, "外部评价"),
+                  (0, e.createElementVNode)("div", { class: "property-list evaluation" }, Object.entries(getVal("墨墨.外部评价", {})).map(([k, v]) => (
+                    (0, e.createElementVNode)("div", { class: "evaluation-item" }, [
+                      (0, e.createElementVNode)("div", { class: "evaluation-title" }, k),
+                      (0, e.createElementVNode)("div", { class: "evaluation-text" }, v)
+                    ])
+                  )))
+                ])
+              ]) : (0, e.createCommentVNode)("")
+            ])
+          ]);
+        };
+      }
+    });
+    $(() => { (0, e.createApp)(qt).mount("#app"); });
+  </script>
+  <style>
+    /* 保持原样式，仅做必要压缩 */
+    :root { --card-bg-color: rgba(255, 248, 250, 0.95); --text-primary-color: #8b576e; --accent-color: #f472b6; --boolean-true-color: #6ee7b7; --boolean-false-color: #f78b8b; }
+    body { font-family: "Noto Sans SC", sans-serif; margin: 0; }
+    .status-card { background: var(--card-bg-color); height: 100vh; display: flex; flex-direction: column; }
+    .tabs { display: flex; background: rgba(255,240,244,0.9); border-bottom: 1px solid #ffc0cb; }
+    .tab-button { flex: 1; padding: 12px; border: none; background: none; color: #b48a9d; cursor: pointer; }
+    .tab-button.active { font-weight: bold; color: var(--text-primary-color); border-bottom: 2px solid var(--accent-color); }
+    .tab-container { flex: 1; overflow-y: auto; padding: 15px; }
+    .section { margin-bottom: 20px; }
+    .section-header { color: var(--accent-color); border-bottom: 1px solid #ffc0cb; padding-bottom: 5px; margin-bottom: 10px; }
+    .property-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .property { background: #fff; padding: 8px 12px; border-radius: 6px; border: 1px solid #ffc0cb44; display: flex; justify-content: space-between; }
+    .property-name { color: #b48a9d; font-size: 0.85em; }
+    .value-main { font-weight: 500; }
+    .is-true { color: var(--boolean-true-color); }
+    .is-false { color: var(--boolean-false-color); }
+    .locked-value { color: #d1d5db; font-style: italic; }
+    .collapsible-header { background: #fff; padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; margin-top: 5px; cursor: pointer; }
+    .expanded { padding: 5px 10px; border-left: 2px solid #f472b622; }
+    .list-item { display: flex; justify-content: space-between; font-size: 0.9em; padding: 4px 0; border-bottom: 1px solid #eee; }
+    .evaluation-item { background: #fff; padding: 10px; border-radius: 6px; margin-bottom: 8px; }
+    .evaluation-title { font-size: 0.8em; color: #b48a9d; }
+  </style>
+</head>
+<body><div id="app"></div></body>
+--- END OF FILE application/json ---
