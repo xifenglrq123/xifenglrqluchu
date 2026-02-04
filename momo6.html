@@ -1,0 +1,265 @@
+<head>
+  <script type="module">
+    const e = Vue,
+      h = e.createElementVNode,
+      t = { id: "status-card", class: "status-card" },
+      a = { class: "tabs" },
+      l = { class: "tab-container" },
+      Ut = "momo_status:active_tab",
+      qt = (0, e.defineComponent)({
+        __name: "app",
+        setup(qt) {
+          const Jt = (0, e.ref)("Page1");
+          function Qt(t) { (Jt.value = t); (0, e.triggerRef)(Jt); }
+          const Wt = (0, e.ref)({});
+          const Xt = (0, e.reactive)({ outfit: true, exp: true, appearance: false, body_mod: false, assets: false, titles: false });
+          
+          function Zt(e) { return !!Xt[e]; }
+          function ea(e) { Xt[e] = !Xt[e]; }
+          function ta(e, t = false) { 
+            if (e === undefined || e === null) return t;
+            return typeof e === "boolean" ? e : String(e).toLowerCase() === "true";
+          }
+          function aa(e) { return (e && typeof e === "object") ? Object.entries(e).filter(([k]) => k !== "$meta") : []; }
+          function na(e) {
+            const arr = aa(e);
+            return arr.length === 0 ? "无" : arr.map(([k, v]) => (v ? `${k}: ${v}` : k)).join("； ");
+          }
+
+          async function pa() {
+            try {
+              const msgs = await getChatMessages(getCurrentMessageId());
+              const data = msgs && msgs.length > 0 && msgs[0].data ? msgs[0].data.stat_data : {};
+              Wt.value = data || {};
+            } catch (err) { console.error("Data Load Error:", err); Wt.value = {}; }
+          }
+
+          (0, e.onMounted)(async () => {
+            const saved = localStorage.getItem(Ut);
+            if (saved) Jt.value = saved;
+            await pa();
+            if (typeof Mvu !== "undefined") eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, pa);
+          });
+          (0, e.watch)(Jt, (v) => { localStorage.setItem(Ut, v); });
+
+          // Helper for Titles
+          const getT = (p, pre="") => {
+            const val = _.get(Wt.value, p, -1);
+            if (val === -1 || val === false || val === null) return { text: "未解锁", class: "locked-value" };
+            if (val === true) return { text: "已解锁", class: "" };
+            return { text: pre + val, class: "" };
+          };
+
+          return (Ut, qt) => (
+            (0, e.openBlock)(),
+            (0, e.createElementBlock)("div", t, [
+              h("div", a, ["Page1", "Page2", "Page3", "Page4"].map(p => (
+                h("button", { 
+                  key: p, type: "button", 
+                  class: ["tab-button", { active: p === (0, e.unref)(Jt) }], 
+                  onClick: () => Qt(p) 
+                }, { Page1: "状态总览", Page2: "情欲记录", Page3: "个人物品", Page4: "外部讯息" }[p])
+              ))),
+              h("div", l, [
+                // PAGE 1: WORLD & CORE
+                h("div", { class: "tab-content", style: { display: (0, e.unref)(Jt) === "Page1" ? "block" : "none" } }, [
+                  h("div", { class: "section" }, [
+                    h("h3", { class: "section-header" }, "世界状态"),
+                    h("div", { class: "property-grid" }, [
+                      {n:"当前地点", v: _.get(Wt.value, "世界.地点", "未知")},
+                      {n:"当前日期", v: (()=>{ 
+                        const d = _.get(Wt.value, "世界.日期");
+                        return (typeof d === 'object') ? `${d.年??''}年${d.月??''}月${d.日??''}日` : `第 ${d||0} 天`;
+                      })()},
+                      {n:"当前时间", v: `${String(_.get(Wt.value,"世界.时间.小时",0)).padStart(2,'0')}:${String(_.get(Wt.value,"世界.时间.分钟",0)).padStart(2,'0')}`},
+                      {n:"星期", v: {1:"星期一",2:"星期二",3:"星期三",4:"星期四",5:"星期五",6:"星期六",7:"星期日"}[_.get(Wt.value,"世界.星期",1)] || "未知"},
+                      {n:"天气", v: _.get(Wt.value, "世界.天气", "晴朗")}
+                    ].map(i => h("div", { class: "property" }, [ h("span", { class: "property-name" }, i.n + ":"), h("span", { class: "value-main" }, i.v) ])))
+                  ]),
+                  h("div", { class: "section" }, [
+                    h("h3", { class: "section-header" }, "墨墨 - 核心状态"),
+                    h("div", { class: "property-grid" }, [
+                      {n:"金钱", v: "￥ " + _.get(Wt.value, "墨墨.常规物品.金钱", 0)},
+                      {n:"学分", v: _.get(Wt.value, "墨墨.常规物品.学分", 0)},
+                      {n:"身份暴露度", v: _.get(Wt.value, "墨墨.身份暴露度", 0)},
+                      {n:"身处状态", v: _.get(Wt.value, "墨墨.身处状态", "未知")},
+                      {n:"满意度", v: _.get(Wt.value, "发布者.发布者满意度", 50)},
+                      {n:"任务倒计时", v: _.get(Wt.value, "发布者.任务发放倒计时天数", 0) + " 天"}
+                    ].map(i => h("div", { class: "property" }, [ h("span", { class: "property-name" }, i.n + ":"), h("span", { class: "value-main" }, i.v) ]))),
+                    ta(_.get(Wt.value, "发布者.惩罚中")) ? h("div", { style: {"margin-top":"10px"} }, [
+                      h("div", { class: "property", style: {"border-color":"var(--warning-color)", "background":"rgba(239,68,68,0.1)"} }, [
+                        h("span", { class: "property-name penalty-active" }, "⚠ 当前处于惩罚状态"),
+                        h("span", { class: "value-main", style: {color:"var(--warning-color)"} }, na(_.get(Wt.value, "发布者.惩罚措施", {})))
+                      ])
+                    ]) : (0, e.createCommentVNode)("v-if", !0)
+                  ]),
+                  h("div", { class: "section" }, [
+                    h("h3", { class: "section-header collapsible", onClick: () => ea("appearance") }, [ h("span", null, "墨墨 - 外观数据"), h("span", { class: "collapsible-arrow", style: { transform: Zt("appearance") ? "rotate(90deg)" : "rotate(0deg)" } }, "▶") ]),
+                    h("div", { class: ["collapsible-content no-border", { expanded: Zt("appearance") }] }, [
+                      h("div", { class: "property-grid" }, [
+                        ["发色","发色"],["发型","发型"],["身高","身高","cm"],["眉形","眉形"],["瞳色","瞳色"],["眼型","眼型"],["脸型","脸型"],["鼻型","鼻型"],["唇形","唇形"],["罩杯","罩杯"],["腰围","腰围"],["臀围","臀围"],["肤色","肤色"]
+                      ].map(f => h("div", { class: "property" }, [ h("span", { class: "property-name" }, f[0] + ":"), h("span", { class: "value-main" }, String(_.get(Wt.value, "墨墨.外观数据."+f[1], "未知")) + (f[2]||'')) ])))
+                    ]),
+                    h("h3", { class: "section-header collapsible", onClick: () => ea("body_mod"), style: {"margin-top":"10px"} }, [ h("span", null, "身体改造记录"), h("span", { class: "collapsible-arrow", style: { transform: Zt("body_mod") ? "rotate(90deg)" : "rotate(0deg)" } }, "▶") ]),
+                    h("div", { class: ["collapsible-content no-border", { expanded: Zt("body_mod") }] }, [
+                      h("div", { class: "property-list" }, [
+                        {n:"身体穿刺", p:"墨墨.外观数据.身体改造.身体穿刺"},
+                        {n:"纹身", p:"墨墨.外观数据.身体改造.纹身"},
+                        {n:"特殊改造", p:"墨墨.外观数据.身体改造.特殊改造"}
+                      ].map(m => h("div", { class: "property" }, [ h("span", { class: "property-name" }, m.n + ":"), h("span", { class: "value-main outfit-value" }, na(_.get(Wt.value, m.p, {}))) ])))
+                    ])
+                  ]),
+                  h("div", { class: "section" }, [
+                    h("h3", { class: "section-header collapsible", onClick: () => ea("outfit") }, [ h("span", null, "当前着装"), h("span", { class: "collapsible-arrow", style: { transform: Zt("outfit") ? "rotate(90deg)" : "rotate(0deg)" } }, "▶") ]),
+                    h("div", { class: ["collapsible-content no-border", { expanded: Zt("outfit") }] }, [
+                      h("div", { class: "property-list" }, ["上装","下装","套装","内衣","内裤","袜子","鞋子","饰品","性玩具","特殊分类"].map(c => h("div", { class: "property" }, [
+                        h("span", { class: "property-name" }, c + ":"),
+                        h("span", { class: "value-main outfit-value" }, na(_.get(Wt.value, "墨墨.服装状态."+c, {})))
+                      ])))
+                    ])
+                  ])
+                ]),
+                // PAGE 2
+                h("div", { class: "tab-content", style: { display: (0, e.unref)(Jt) === "Page2" ? "block" : "none" } }, [
+                  h("div", { class: "section" }, [
+                    h("h3", { class: "section-header" }, "色情状态"),
+                    h("div", { class: "property-grid" }, [
+                      {n:"堕落等级", v: _.get(Wt.value,"墨墨.色情状态.堕落等级",0)},
+                      {n:"性欲", v: _.get(Wt.value,"墨墨.色情状态.性欲",0)},
+                      {n:"暴露值", v: _.get(Wt.value,"墨墨.色情状态.暴露值",0)},
+                      {n:"宫内精液", v: _.get(Wt.value,"墨墨.色情状态.宫内精液",0)+"ml"},
+                      {n:"肛门精液", v: _.get(Wt.value,"墨墨.色情状态.肛门精液",0)+"ml"},
+                      {n:"淫水数量", v: _.get(Wt.value,"墨墨.色情状态.淫水数量",0)+"ml"}
+                    ].map(i => h("div", { class: "property" }, [ h("span", { class: "property-name" }, i.n + ":"), h("span", { class: "value-main" }, i.v) ])))
+                  ]),
+                  h("div", { class: "section" }, [
+                    h("h3", { class: "section-header" }, "身体色情记录"),
+                    h("div", { class: "property-grid" }, [
+                      {n:"性经验", v: "次数: "+_.get(Wt.value,"墨墨.身体色情记录.性经验",0)},
+                      {n:"高潮次数", v: _.get(Wt.value,"墨墨.身体色情记录.高潮次数",0)},
+                      {n:"阴道处女", v: ta(_.get(Wt.value,"墨墨.身体色情记录.阴道处女",true)), b:true},
+                      {n:"肛门处女", v: ta(_.get(Wt.value,"墨墨.身体色情记录.肛门处女",true)), b:true},
+                      {n:"口穴开发", v: _.get(Wt.value,"墨墨.身体色情记录.口穴开发度",0)},
+                      {n:"私处开发", v: _.get(Wt.value,"墨墨.身体色情记录.私处开发度",0)},
+                      {n:"肛门开发", v: _.get(Wt.value,"墨墨.身体色情记录.肛门开发度",0)},
+                      {n:"乳房开发", v: _.get(Wt.value,"墨墨.身体色情记录.乳房开发度",0)},
+                      {n:"屁股敏感", v: _.get(Wt.value,"墨墨.身体色情记录.屁股敏感度",0)}
+                    ].map(i => h("div", { class: "property" }, [ 
+                      h("span", { class: "property-name" }, i.n + ":"), 
+                      i.b ? h("span", { class: ["value-main", i.v?"is-true":"is-false"] }, i.v?"是":"否") : h("span", { class: "value-main" }, i.v)
+                    ])))
+                  ])
+                ]),
+                // PAGE 3
+                h("div", { class: "tab-content", style: { display: (0, e.unref)(Jt) === "Page3" ? "block" : "none" } }, [
+                  h("div", { class: "section" }, [
+                    h("h3", { class: "section-header" }, "背包物品"),
+                    h("div", { class: "property-list" }, (aa(_.get(Wt.value, "墨墨.背包.物品", {})).length === 0) ? [h("div", { class: "property" }, "空")] : aa(_.get(Wt.value, "墨墨.背包.物品", {})).map(([k, v]) => h("div", { key: k, class: "property" }, [ h("span", { class: "property-name" }, k), h("span", { class: "value-main" }, "x "+v) ])))
+                  ]),
+                  h("div", { class: "section" }, [
+                    h("h3", { class: "section-header collapsible", onClick: () => ea("assets") }, [ h("span", null, "资产明细"), h("span", { class: "collapsible-arrow", style: { transform: Zt("assets") ? "rotate(90deg)" : "rotate(0deg)" } }, "▶") ]),
+                    h("div", { class: ["collapsible-content no-border", { expanded: Zt("assets") }] }, [
+                      h("div", { class: "property-list" }, [["载具","墨墨.资产.载具"], ["房产","墨墨.资产.房产"]].map(a => h("div", { key: a[0], class: "property" }, [ h("span", { class: "property-name" }, a[0]+":"), h("span", { class: "value-main outfit-value" }, na(_.get(Wt.value, a[1], {}))) ])))
+                    ])
+                  ]),
+                  h("div", { class: "section" }, [
+                    h("h3", { class: "section-header" }, "衣柜展示"),
+                    ["上装","下装","套装","内衣","内裤","袜子","鞋子","饰品","性玩具","特殊分类"].map(cat => h("div", { key: cat }, [
+                      h("div", { class: "collapsible-header wardrobe-item", onClick: () => ea("wardrobe:"+cat) }, [
+                        h("span", { class: "property-name" }, cat + " (" + aa(_.get(Wt.value, "墨墨.衣柜."+cat, {})).length + ")"),
+                        h("span", { class: "collapsible-arrow", style: { transform: Zt("wardrobe:"+cat) ? "rotate(90deg)" : "rotate(0deg)" } }, "▶")
+                      ]),
+                      h("div", { class: ["collapsible-content", { expanded: Zt("wardrobe:"+cat) }] }, [
+                        (aa(_.get(Wt.value, "墨墨.衣柜."+cat, {})).length === 0) ? h("div", { class: "list-item" }, "空") : 
+                        h("div", { class: "property-list" }, aa(_.get(Wt.value, "墨墨.衣柜."+cat, {})).map(([n, d]) => h("div", { key: n, class: "list-item" }, [
+                          h("span", { class: "item-name" }, n),
+                          h("span", { class: "item-desc" }, String(d).split("(基础")[0])
+                        ])))
+                      ])
+                    ]))
+                  ])
+                ]),
+                // PAGE 4
+                h("div", { class: "tab-content", style: { display: (0, e.unref)(Jt) === "Page4" ? "block" : "none" } }, [
+                  h("div", { class: "section" }, [
+                    h("h3", { class: "section-header collapsible", onClick: () => ea("titles") }, [ h("span", null, "持有称号"), h("span", { class: "collapsible-arrow", style: { transform: Zt("titles") ? "rotate(90deg)" : "rotate(0deg)" } }, "▶") ]),
+                    h("div", { class: ["collapsible-content no-border", { expanded: Zt("titles") }] }, [
+                      h("div", { class: "property-list" }, [
+                        {n:"教授玩物", s: getT("墨墨.称号.经济学教授的玩物", "好感: ")},
+                        {n:"篮球助理", s: getT("墨墨.称号.篮球部助理", "进度: ")},
+                        {n:"篮球满意", v: _.get(Wt.value, "墨墨.称号.篮球部成员满意度", 0)},
+                        {n:"篮球任务", b: ta(_.get(Wt.value, "墨墨.称号.篮球部日常任务", false))},
+                        {n:"游泳助理", s: getT("墨墨.称号.游泳部助理", "进度: ")},
+                        {n:"游泳满意", v: _.get(Wt.value, "墨墨.称号.游泳社成员满意度", 0)},
+                        {n:"游泳任务", b: ta(_.get(Wt.value, "墨墨.称号.游泳社日常任务", false))},
+                        {n:"遗主者", s: getT("墨墨.称号.遗主者", "好感: ")},
+                        {n:"遗主任务", b: ta(_.get(Wt.value, "墨墨.称号.遗主者任务", false))},
+                        {n:"天灾同步", s: getT("墨墨.称号.天灾", "同步率: ")}
+                      ].map(i => h("div", { class: "property" }, [
+                        h("span", { class: "property-name" }, i.n + ":"),
+                        i.s ? h("span", { class: ["value-main", i.s.class] }, i.s.text) :
+                        (i.b !== undefined) ? h("span", { class: ["value-main", i.b?"is-true":"is-false"] }, i.b?"已开启":"未开启") :
+                        h("span", { class: "value-main" }, i.v)
+                      ])))
+                    ])
+                  ]),
+                  h("div", { class: "section" }, [
+                    h("h3", { class: "section-header" }, "外部评价"),
+                    h("div", { class: "property-list evaluation" }, [
+                      {k:"同学评价", p:"墨墨.外部评价.同学评价"},
+                      {k:"老师评价", p:"墨墨.外部评价.老师评价"},
+                      {k:"暗网评价", p:"墨墨.外部评价.暗网评价"},
+                      {k:"互联网评价", p:"墨墨.外部评价.互联网评价"}
+                    ].map(e => h("div", { class: "evaluation-item" }, [
+                      h("div", { class: "evaluation-title" }, e.k),
+                      h("div", { class: "evaluation-text" }, _.get(Wt.value, e.p, "暂无"))
+                    ])))
+                  ])
+                ])
+              ])
+            ])
+          );
+        },
+      });
+    $(async () => { await waitGlobalInitialized("Mvu"); (0, e.createApp)(qt).mount("#app"); });
+  </script>
+  <style>
+    @import url(https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap);
+    :root { --bg-color: transparent; --card-bg-color: rgba(255, 248, 250, 0.95); --border-color: rgba(255, 192, 203, 0.5); --text-primary-color: #8b576e; --text-secondary-color: #b48a9d; --accent-color: #f472b6; --accent-soft: rgba(244, 114, 182, 0.15); --tab-bg-color: rgba(255, 240, 244, 0.9); --item-bg-color: rgba(255, 255, 255, 0.65); --item-border-color: rgba(255, 192, 203, 0.4); --item-hover-bg-color: rgba(244, 114, 182, 0.1); --boolean-true-color: #6ee7b7; --boolean-false-color: #f78b8b; --locked-color: #d1d5db; --warning-color: #ef4444; }
+    body { font-family: "Noto Sans SC", sans-serif; background: var(--bg-color); color: var(--text-primary-color); margin: 0; padding: 0; width: 100%; -webkit-font-smoothing: antialiased; }
+    .status-card { width: 100%; height: 100%; background: var(--card-bg-color); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); backdrop-filter: blur(12px); font-size: 14px; display: flex; flex-direction: column; }
+    .tabs { display: flex; background: var(--tab-bg-color); border-bottom: 1px solid var(--border-color); }
+    .tab-button { flex: 1; padding: 12px 5px; cursor: pointer; border: none; background: transparent; color: var(--text-secondary-color); font-size: 0.95em; transition: all 0.3s; position: relative; }
+    .tab-button.active { color: var(--text-primary-color); font-weight: 700; }
+    .tab-button.active:after { content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 60%; height: 2px; background: var(--accent-color); }
+    .tab-container { flex: 1; overflow-y: auto; padding: 18px; }
+    .tab-content { animation: fadeIn 0.4s; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .section { margin-bottom: 22px; }
+    .section-header { font-weight: 700; font-size: 1.1em; color: var(--accent-color); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); }
+    .section-header.collapsible { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .property-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+    .property-list { display: flex; flex-direction: column; gap: 10px; }
+    .property { background: var(--item-bg-color); border-radius: 8px; padding: 10px 12px; border: 1px solid var(--item-border-color); display: flex; justify-content: space-between; align-items: center; transition: all 0.3s; gap: 10px; }
+    .property-name { color: var(--text-secondary-color); font-weight: 500; font-size: 0.9em; flex-shrink: 0; }
+    .value-main { font-weight: 500; color: var(--text-primary-color); text-align: right; word-wrap: break-word; }
+    .is-true { color: var(--boolean-true-color); font-weight: 700; }
+    .is-false { color: var(--boolean-false-color); font-weight: 700; }
+    .locked-value { color: var(--locked-color); font-style: italic; }
+    .collapsible-arrow { transition: transform 0.3s; color: var(--accent-color); }
+    .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .collapsible-content.expanded { max-height: 2500px; padding-top: 5px; }
+    .no-border { border: none; }
+    .wardrobe-item { background: var(--item-bg-color); border: 1px solid var(--item-border-color); border-radius: 8px; margin-bottom: 5px; padding: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .list-item { display: flex; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--border-color); }
+    .item-name { color: var(--text-primary-color); }
+    .item-desc { color: var(--text-secondary-color); font-size: 0.9em; text-align: right; max-width: 60%; }
+    .evaluation-item { background: var(--item-bg-color); border-radius: 8px; padding: 12px; border: 1px solid var(--item-border-color); margin-bottom: 10px; }
+    .evaluation-title { color: var(--text-secondary-color); font-weight: 500; margin-bottom: 6px; }
+    .evaluation-text { color: var(--text-primary-color); line-height: 1.5; }
+    .outfit-value { font-size: 0.9em; color: var(--text-secondary-color); text-align: right; max-width: 65%; line-height: 1.3; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+</body>
